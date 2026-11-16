@@ -115,6 +115,7 @@ class CommunityCase(BotFixture, unittest.IsolatedAsyncioTestCase):
         await self.bot.safe_handle({"update_id": 1, "chat_member": event})
         self.assertIn("Добро пожаловать", str(self.tg.sent[-1][1]))
         self.db.setting(CHAT, "welcome_text", "A custom greeting: {name}")
+        event["date"] += 1
         await self.bot.safe_handle({"update_id": 2, "chat_member": event})
         self.assertEqual(self.tg.sent[-1][1], "A custom greeting: Sam")
 
@@ -278,7 +279,7 @@ class OperationsCase(unittest.TestCase):
                 )
             db = DB(str(path))
             self.assertEqual(db.get("legacy"), 42)
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
             self.assertEqual(db.all("SELECT * FROM federations"), [])
             db.close()
 

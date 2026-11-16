@@ -1,4 +1,5 @@
 from .i18n import tr
+from .presentation import decorate_keyboard, plain_presentation
 import asyncio
 import httpx
 
@@ -16,6 +17,8 @@ class Telegram:
         self.client = client or httpx.AsyncClient(timeout=httpx.Timeout(40, connect=10))
 
     async def call(self, method, **data):
+        if isinstance(data.get("reply_markup"), dict):
+            data["reply_markup"] = decorate_keyboard(data["reply_markup"])
         # Do not log request URLs: Telegram embeds the token in the path.
         for attempt in range(3):
             response = await self.client.post(self.url + method, json=data)
@@ -25,6 +28,12 @@ class Telegram:
                 raise APIError(method, response.status_code, "Non-JSON Telegram response") from None
             if body.get("ok"):
                 return body["result"]
+            if body.get("error_code") == 400 and attempt < 2:
+                description = body.get("description", "").lower()
+                plain = plain_presentation(data)
+                if plain != data and any(word in description for word in ("emoji", "style", "button")):
+                    data = plain
+                    continue
             if body.get("error_code") == 429 and attempt < 2:
                 delay = body.get("parameters", {}).get("retry_after", 1)
                 if delay > 30:
@@ -38,7 +47,7 @@ class Telegram:
 
     async def send(self, chat, text, keyboard=None, **extra):
         data = dict(
-            chat_id=chat, text=str(text)[:4000], parse_mode="HTML", link_preview_options={"is_disabled": True}
+            chat_id=chat, text=str(text), parse_mode="HTML", link_preview_options={"is_disabled": True}
         )
         if keyboard is not None:
             data["reply_markup"] = {"inline_keyboard": keyboard}

@@ -26,3 +26,6 @@
 | A single shared ledger/login/token for all companion services | Not included | Deliberately not claimed |
 
 No row marked as implemented means “independently security-audited” or “tested with your real bot token.” Please follow the live test guide before launch.
+
+
+Version 0.4 additions: [staff/ranks/tags/membership/channel/call tools](COMMUNITY.md), [keyboard styles and custom emoji](APPEARANCE.md), [shared games](GAMES.md). Call start/end, participant muting and music streaming are not native Bot API features. All reference catalog keys are present in English and Persian; other languages retain English fallback.

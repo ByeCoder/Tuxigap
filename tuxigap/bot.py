@@ -14,6 +14,8 @@ from .billing import Billing, PaymentNeedsReview, accept_payment, mark_refunded
 from .engines import SpamEngine
 from .growth import Growth, TRUTHS, DARES, FORTUNES
 from .community import Community
+from .hub import Hub, COMMANDS as HUB_COMMANDS, rank_for
+from .presentation import rich_text, using_presentation
 from .ported import fun as ported_fun
 from .ported.locks import LOCK_TYPES
 from .i18n import LANGUAGES, DEFAULT_LANGUAGE, using_language
@@ -88,6 +90,7 @@ class Bot:
         self.engine = SpamEngine(config, db)
         self.growth = Growth(self)
         self.community = Community(self)
+        self.hub = Hub(self)
         self.bot_id = db.get("bot_id", 0)
         self.username = db.get("bot_username", "")
 
@@ -284,7 +287,7 @@ class Bot:
                 )
             return
         if "chat_join_request" in update:
-            return await self.billing.join_request(update["chat_join_request"])
+            return await self.hub.join_request(update["chat_join_request"])
         if "chat_member" in update:
             return await self.membership(update["chat_member"])
         if "message_reaction" in update:
@@ -359,6 +362,8 @@ class Bot:
                     "UPDATE messages SET text=? WHERE chat=? AND mid=?", (text[:4000], chat, m["message_id"])
                 )
             conf = self.db.chat(chat)["settings"]
+            if not edited and await self.hub.call_event(m):
+                return
             if (
                 conf["enabled"]
                 and is_content
@@ -454,13 +459,15 @@ class Bot:
                 "SELECT body FROM filters WHERE chat=? AND trigger=?", (chat, normalize(text))
             )
             if matched and self.db.cooldown(chat, user, "autoresponder", 15):
-                await self.tg.send(chat, escape(matched["body"]))
+                await self.tg.send(chat, rich_text(matched["body"]))
 
     async def command(self, cmd, args, m):
         chat, user = m["chat"]["id"], m.get("from", {}).get("id", 0)
         private = m["chat"]["type"] == "private"
         if not user:
             return
+        if cmd in HUB_COMMANDS:
+            return await self.hub.command(cmd, args, m)
         if cmd in ("language", "lang"):
             if not private:
                 await self.require_admin(chat, user)
@@ -539,7 +546,7 @@ class Bot:
                 return await self.my_chats(user)
             return await self.panel(chat, user, chat)
         if cmd == "manage" and not private:
-            await self.require_admin(chat, user)
+            await self.hub.require(chat, user, "moderation")
             target = m.get("reply_to_message")
             if not target or not target.get("from") or target.get("sender_chat"):
                 raise ValueError(tr("m_b660a64fadb6"))
@@ -672,7 +679,7 @@ class Bot:
             choices = {"toss": ported_fun.TOSS, "decide": ported_fun.DECIDE, "8ball": ported_fun.EIGHTBALL}
             return await self.tg.send(chat, secrets.choice(choices[cmd]))
         if cmd == "rules":
-            return await self.tg.send(chat, escape(self.db.chat(chat)["settings"]["rules"]))
+            return await self.tg.send(chat, rich_text(self.db.chat(chat)["settings"]["rules"]))
         if cmd == "notes":
             rows = self.db.all("SELECT name FROM notes WHERE chat=? ORDER BY name LIMIT 50", (chat,))
             return await self.tg.send(
@@ -680,7 +687,7 @@ class Bot:
             )
         if cmd == "get":
             row = self.db.one("SELECT body FROM notes WHERE chat=? AND name=?", (chat, args.strip()))
-            return await self.tg.send(chat, escape(row["body"]) if row else tr("m_87e2239d1927"))
+            return await self.tg.send(chat, rich_text(row["body"]) if row else tr("m_87e2239d1927"))
         if cmd in ("play", "profile", "daily", "top", "joke", "quiz", "dice"):
             return await self.fun(
                 chat, user, "menu" if cmd == "play" else cmd, chat, m["from"].get("first_name", "")
@@ -727,7 +734,10 @@ class Bot:
             "unmute": "can_restrict_members",
         }
         if cmd in rights:
-            await self.require_admin(chat, user, rights[cmd])
+            if cmd == "pin":
+                await self.require_admin(chat, user, rights[cmd])
+            else:
+                await self.hub.require(chat, user, "moderation", rights[cmd])
             target = m.get("reply_to_message")
             if target and target.get("from") and not target.get("sender_chat"):
                 target_user = target["from"]["id"]
@@ -743,6 +753,7 @@ class Bot:
                     tr("m_f7a04ee84454"),
                 )
             await self.protect_target(chat, target_user)
+            await self.hub.protect_staff(chat, user, target_user)
             existing = self.db.one(
                 "SELECT * FROM audit WHERE chat=? AND mid=? AND actor=? AND action=?",
                 (chat, m["message_id"], user, cmd),
@@ -893,10 +904,12 @@ class Bot:
                     p3=p["xp"],
                     p4=p["coins"],
                     p5=p["warns"],
-                ),
+                )
+                + "\n"
+                + tr("hub.profile_rank", name=escape(rank_for(conf, p["xp"])[0])),
             )
         if action == "rules":
-            return await self.tg.send(destination, escape(conf["rules"]))
+            return await self.tg.send(destination, rich_text(conf["rules"]))
         if action == "invite":
             if not self.db.cooldown(chat, user, "invite", 60):
                 raise ValueError(tr("m_564aa5b79432"))
@@ -974,6 +987,8 @@ class Bot:
         destination, mid = m["chat"]["id"], m["message_id"]
         parts = q.get("data", "").split(":")
         route = parts[0]
+        if route == "h":
+            return await self.hub.callback(q, parts)
         if route == "l":
             await self.change_language(int(parts[1]), user, parts[2], destination)
             return await self.tg.call("answerCallbackQuery", callback_query_id=q["id"])
@@ -1038,7 +1053,7 @@ class Bot:
                 lines = [tr("m_f45f3a9bab68", p0=count), tr("m_ca39658cdcc0", p0=bot_member["status"])]
                 lines += [f"{key}: {'✅' if bot_member.get(key) else '❌'}" for key in required]
                 lines += [
-                    f"AI: {'✅' if self.config.ai_key and self.config.ai_model else '❌ کلید یا مدل تنظیم نشده'}",
+                    f"AI: {'✅' if self.config.ai_key and self.config.ai_model else tr('hub.ai_missing')}",
                     tr("m_97eb655b1d37"),
                 ]
                 return await self.tg.send(destination, "\n".join(lines))
@@ -1174,7 +1189,7 @@ class Bot:
                 return await self.tg.send(destination, tr("m_fe37e18aba3a"))
         elif route == "u":
             chat, target, action, target_mid = int(parts[1]), int(parts[2]), parts[3], int(parts[4])
-            await self.require_admin(chat, user)
+            await self.hub.require(chat, user, "moderation")
             if action == "banconfirm":
                 return await self.tg.send(
                     destination,
@@ -1230,7 +1245,7 @@ class Bot:
             self.db.bump(game["chat"], "games")
             return await self.tg.send(
                 destination,
-                tr("m_b3df839b5557", p0=("سنگ", "کاغذ", "قیچی")[data["bot"]])
+                tr("m_b3df839b5557", p0=(tr("hub.rock"), tr("hub.paper"), tr("hub.scissors"))[data["bot"]])
                 + (
                     tr("m_d9e155ed036f")
                     if result == 0
@@ -1291,6 +1306,17 @@ class Bot:
             return await self.tg.send(destination, tr("m_ea3ad3b8f7a8"))
         elif route == "forget" and int(parts[1]) == user:
             with self.db.transaction():
+                for table in (
+                    "member_tags",
+                    "member_presence",
+                    "member_events",
+                    "staff_roles",
+                    "party_scores",
+                    "admission_requests",
+                    "party_attempts",
+                ):
+                    self.db.execute(f"DELETE FROM {table} WHERE user=?", (user,))
+                self.db.execute("UPDATE party_games SET winner=0 WHERE winner=?", (user,))
                 self.db.execute("DELETE FROM members WHERE user=?", (user,))
                 self.db.execute("UPDATE messages SET text='' WHERE user=?", (user,))
                 self.db.execute("UPDATE audit SET text='' WHERE user=?", (user,))
@@ -1527,6 +1553,8 @@ class Bot:
         before, after = present(event["old_chat_member"]), present(event["new_chat_member"])
         if before == after:
             return
+        if not self.hub.membership(event, after):
+            return
         user = target["id"]
         if event["new_chat_member"]["status"] == "kicked" and event.get("from", {}).get("id") != self.bot_id:
             self.db.execute("DELETE FROM federation_enforced WHERE chat=? AND user=?", (chat, user))
@@ -1538,6 +1566,7 @@ class Bot:
         self.db.bump(chat, "joins" if after else "leaves", ts=event.get("date"))
         if not after:
             self.db.execute("DELETE FROM captcha WHERE chat=? AND user=?", (chat, user))
+            await self.hub.goodbye(event)
             return
         conf = self.db.chat(chat)["settings"]
         if not conf["enabled"] or user == self.bot_id or await self.admin(chat, user):
@@ -1580,7 +1609,7 @@ class Bot:
             secrets.SystemRandom().shuffle(choices)
             return await self.tg.send(
                 chat,
-                tr("m_1df21f3e8d86", p0=escape(target.get("first_name", "عضو جدید")), p1=a, p2=b),
+                tr("m_1df21f3e8d86", p0=escape(target.get("first_name", tr("m_030f1b33c18d"))), p1=a, p2=b),
                 [[button(str(x), f"c:{chat}:{user}:{x}") for x in choices]],
             )
         self.growth.record_join(
@@ -1589,7 +1618,7 @@ class Bot:
         if conf["welcome"] and event["chat"]["type"] in ("group", "supergroup"):
             await self.tg.send(
                 chat,
-                escape(
+                rich_text(
                     str(conf["welcome_text"]).replace(
                         "{name}", target.get("first_name", tr("m_030f1b33c18d"))
                     )
@@ -1617,6 +1646,8 @@ class Bot:
             or update.get("edited_message")
             or update.get("channel_post")
             or update.get("callback_query", {}).get("message")
+            or update.get("chat_join_request")
+            or update.get("edited_channel_post")
             or update.get("chat_member")
             or update.get("my_chat_member")
             or {}
@@ -1627,10 +1658,23 @@ class Bot:
             or update.get("inline_query", {}).get("from")
             or message.get("from", {})
         )
+        route = update.get("callback_query", {}).get("data", "").split(":")
+        if len(route) > 1 and route[0] in ("h", "a", "f", "u"):
+            try:
+                source_chat = int(route[1])
+                if self.db.one("SELECT 1 FROM chats WHERE id=?", (source_chat,)):
+                    chat = source_chat
+            except ValueError:
+                pass
         code = self.db.get(f"user_language:{sender.get('id', chat)}", DEFAULT_LANGUAGE)
         if chat < 0 and self.db.one("SELECT 1 FROM chats WHERE id=?", (chat,)):
             code = self.db.chat(chat)["settings"].get("language", DEFAULT_LANGUAGE)
-        with using_language(code):
+        conf = (
+            self.db.chat(chat)["settings"]
+            if chat < 0 and self.db.one("SELECT 1 FROM chats WHERE id=?", (chat,))
+            else {}
+        )
+        with using_language(code), using_presentation(conf):
             return await self._safe_handle(update)
 
     async def choose_language(self, chat, destination):

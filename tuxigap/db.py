@@ -69,6 +69,17 @@ CREATE TABLE IF NOT EXISTS federation_bans(fid TEXT,user INTEGER,reason TEXT,act
 CREATE TABLE IF NOT EXISTS federation_jobs(id INTEGER PRIMARY KEY,fid TEXT,chat INTEGER,user INTEGER,action TEXT,
  version INTEGER,state TEXT DEFAULT 'pending',due INTEGER,attempts INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS federation_enforced(fid TEXT,chat INTEGER,user INTEGER,PRIMARY KEY(fid,chat,user));
+CREATE TABLE IF NOT EXISTS staff_roles(chat INTEGER,user INTEGER,role TEXT,actor INTEGER,PRIMARY KEY(chat,user));
+CREATE TABLE IF NOT EXISTS member_tags(chat INTEGER,user INTEGER,label TEXT,PRIMARY KEY(chat,user,label));
+CREATE TABLE IF NOT EXISTS member_presence(chat INTEGER,user INTEGER,active INTEGER,ts INTEGER,PRIMARY KEY(chat,user));
+CREATE TABLE IF NOT EXISTS member_events(chat INTEGER,user INTEGER,ts INTEGER,old TEXT,new TEXT,actor INTEGER,active INTEGER,
+ PRIMARY KEY(chat,user,ts,old,new));
+CREATE TABLE IF NOT EXISTS admission_requests(id INTEGER PRIMARY KEY,chat INTEGER,user INTEGER,name TEXT,requested INTEGER,state TEXT DEFAULT 'pending');
+CREATE INDEX IF NOT EXISTS admission_chat ON admission_requests(chat,state,id);
+CREATE TABLE IF NOT EXISTS call_events(chat INTEGER,mid INTEGER,kind TEXT,ts INTEGER,data TEXT,PRIMARY KEY(chat,mid));
+CREATE TABLE IF NOT EXISTS party_games(id INTEGER PRIMARY KEY,chat INTEGER,mode TEXT,data TEXT,creator INTEGER,expires INTEGER,state TEXT DEFAULT 'open',winner INTEGER);
+CREATE TABLE IF NOT EXISTS party_attempts(game INTEGER,user INTEGER,n INTEGER,PRIMARY KEY(game,user));
+CREATE TABLE IF NOT EXISTS party_scores(chat INTEGER,user INTEGER,points INTEGER,rounds INTEGER,PRIMARY KEY(chat,user));
 """
 
 
@@ -80,13 +91,13 @@ class DB:
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA synchronous=FULL")
         version = self.conn.execute("PRAGMA user_version").fetchone()[0]
-        if version > 2:
+        if version > 3:
             self.conn.close()
             raise RuntimeError("Database is newer than this code. Upgrade Tuxigap first.")
         self.conn.executescript(SCHEMA)
-        if version < 2:
+        if version < 3:
             with self.transaction():
-                self.execute("PRAGMA user_version=2")
+                self.execute("PRAGMA user_version=3")
 
     def close(self):
         self.conn.close()
@@ -224,6 +235,11 @@ class DB:
         with self.transaction():
             self.execute("DELETE FROM messages WHERE ts<?", (cutoff,))
             self.execute("DELETE FROM join_events WHERE ts<?", (now - 86400,))
+            self.execute("DELETE FROM member_events WHERE ts<?", (cutoff,))
+            self.execute("DELETE FROM call_events WHERE ts<?", (cutoff,))
+            self.execute("DELETE FROM admission_requests WHERE requested<?", (cutoff,))
+            self.execute("DELETE FROM party_games WHERE expires<?", (now - 86400,))
+            self.execute("DELETE FROM party_attempts WHERE game NOT IN (SELECT id FROM party_games)")
             self.execute("UPDATE audit SET text='' WHERE ts<? AND text<>''", (cutoff,))
             self.execute("DELETE FROM samples WHERE ts<?", (now - 90 * 86400,))
             self.execute("DELETE FROM games WHERE expires<?", (now - 86400,))

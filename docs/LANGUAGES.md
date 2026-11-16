@@ -14,7 +14,7 @@ English is selected until you explicitly choose another language. Telegram's acc
 
 ## What is translated
 
-The English catalog covers the extracted bot UI and messages. Persian includes the original message set. The other catalogs localize core menus, analytics labels, common actions, language choices and selected member/payment messages. **Some advanced prompts, error explanations, games and newer features still fall back to English.** Choosing a language doesn't disable features, but it isn't a claim of complete professional translation.
+The English catalog covers the extracted bot UI and messages. Persian now covers every key in the English reference catalog, including new staff/help/dashboard messages. The other catalogs localize core menus, analytics labels, common actions, language choices and selected member/payment messages. **In the other 13 catalogs, some advanced prompts, error explanations, games and newer features still fall back to English.** Choosing a language doesn't disable features, but it isn't a claim of complete professional translation.
 
 Custom rules, welcome text, posts, note content, user names, historical audit reasons and source code tokens aren't automatically translated. Built-in defaults follow the active language. AI answers and generated quizzes are instructed to use the group's selected language, subject to the provider's response.
 

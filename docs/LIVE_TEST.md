@@ -57,3 +57,16 @@ If using vision, select a vision-capable model, tell your members what is shared
 Studio needs its own different bot token, credentials, public HTTPS configuration for Mini Apps and its own upstream testing. Its ledger and languages are separate. Avoid enabling two competing moderators in the same group.
 
 Finally, rehearse backup/restore and a clean restart. Record the component versions you actually tested. Thanks for giving your community a thoughtful launch. 🌷
+
+
+## New community tools
+
+- Grant/revoke bot staff roles as the real owner; confirm a departed staff member cannot use an old button.
+- Verify actual `/promote host` grants only expected human call rights and `/demote` removes them on a bot-editable test admin.
+- Check button colors in updated Telegram apps. Try a real custom emoji with an eligible bot owner, then verify ordinary fallback with an unavailable emoji.
+- Test visible member tags with Manage tags rights; Telegram does not allow emoji in tags/admin titles.
+- Review manual, auto and trusted join requests; test dry run, a paid subscriber, an unpaid account, a banned federation member and superseded buttons.
+- Check welcome/goodbye messages, duplicate membership updates and observed counts.
+- Post/edit/pin/unpin/delete in a private test channel; verify linked-group settings stay separate.
+- Start/end/schedule a group call manually in Telegram and observe events; test the invitation link and human host privileges.
+- Play all five `/party` modes with two accounts; check five-attempt limits, one winner, persisted scores and disabled activities.

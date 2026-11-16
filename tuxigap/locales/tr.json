@@ -173,5 +173,17 @@
   "m_4e972589c0a4": "Devam ederek satış koşullarını kabul edersin: ",
   "m_e2ae258a70c2": "Otomatik yenileme iptal edildi. Ödediğin dönem bitene kadar erişimin devam eder. 🌷",
   "m_ea3ad3b8f7a8": "✅ İade kaydedildi. Erişim süresi yeniden hesaplandı.",
-  "m_650c8fd7acd2": "Henüz aktif üyeliğin yok. Hazır olduğunda /shop sayfasına bakabilirsin. 🌷"
+  "m_650c8fd7acd2": "Henüz aktif üyeliğin yok. Hazır olduğunda /shop sayfasına bakabilirsin. 🌷",
+  "hub.staff": "🧰 Ekip paneli",
+  "hub.analytics": "📊 İstatistikler",
+  "hub.members": "👥 Üyeler",
+  "hub.requests": "📨 Katılım istekleri",
+  "hub.tags": "🏷 Üye etiketleri",
+  "hub.calls": "📞 Grup aramaları",
+  "hub.games": "🎲 Grup oyunları",
+  "hub.channel": "📣 Kanal araçları",
+  "hub.roles": "🪪 Ekip rolleri",
+  "hub.appearance": "🎨 Düğmeler ve emoji",
+  "hub.lifecycle": "👋 Giriş ve çıkışlar",
+  "hub.native_panel": "⚙️ Yönetici paneli"
 }

@@ -1,12 +1,12 @@
 # What we actually checked
 
-Release: **0.3.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
+Release: **0.4.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 
-**Recorded CI: [all four jobs passed](https://github.com/ByeCoder/Tuxigap/actions/runs/43833871701)** for code commit `0c7606c37a0eed4a3f696c07656bef1b24db8962`: Python 3.12, Python 3.13, native Docker, and Chromium browser checks. The browser job captured the [desktop](images/dashboard-en.png) and [mobile](images/dashboard-mobile.png) previews using synthetic data.
+**Prior 0.3 recorded CI: [all four jobs passed](https://github.com/ByeCoder/Tuxigap/actions/runs/43833871701)** for code commit `0c7606c37a0eed4a3f696c07656bef1b24db8962`: Python 3.12, Python 3.13, native Docker, and Chromium browser checks. The browser job captured the [desktop](images/dashboard-en.png) and [mobile](images/dashboard-mobile.png) previews using synthetic data.
 
 | Check | Local result / boundary |
 |---|---|
-| Unit and integration tests | 83 independent tests passed before publication; CI runs the current suite |
+| Unit and integration tests | 109 independent tests passed before publication; CI runs the current suite |
 | Ruff | Source, helper and test lint/format checks passed |
 | JavaScript | Syntax checks included in validation |
 | Native HTTP dashboard | Authentication, safe settings, training, static paths and period validation tested with a local server |
@@ -14,7 +14,7 @@ Release: **0.3.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 | Source ports | Entity offsets, scoped allowlists, lock families and bounded text output tested |
 | Community additions | Anti-raid, quiet hours, trusted members, federation ownership, stale jobs, manual-ban protection and paid-gate interaction tested |
 | AI additions | Context/public-note and image/quiz payload contracts tested with synthetic HTTP responses |
-| Database upgrade | Schema 1 → 2 retains existing data in a regression test |
+| Database upgrade | Schema 1/2 → 3 retains existing data in a regression test |
 | Demo | Synthetic data population tested with network-client construction blocked |
 | Real Telegram / Stars / AI provider | Not performed here: no real token, account or provider key supplied |
 | Native Docker | Image build and offline configuration/database check passed in recorded CI |
@@ -27,3 +27,6 @@ The earlier 0.2 code passed Python 3.12/3.13 and native Docker build in [this re
 A browser launch in the authoring workspace was blocked by its operating-system socket restrictions, so it isn't reported as a local visual pass. The browser smoke script is included for a normal runner and CI. Any screenshot it creates uses synthetic demo data only.
 
 Please complete [LIVE_TEST.md](LIVE_TEST.md), especially membership payments and multi-group federation behavior, before using the toolkit with real communities.
+
+
+For 0.4, 26 additional tests cover safe emoji payloads and fallback, context isolation, staff assignment/scope, delegated moderation, peer protection, promotion subsets, join-policy/payment/federation interactions, retry and stale-button behavior, member-event deduplication, tags, ranks, channel controls, call events, confirmed erasure and persistent group-game rewards. Current 0.4 publication checks are recorded after its workflow finishes. No live Telegram, custom-emoji entitlement, call, channel or Stars test has been performed here.

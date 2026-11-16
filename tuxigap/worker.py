@@ -106,9 +106,10 @@ async def scheduled_posts(bot, now):
             if not await bot.admin(job["chat"], job["creator"], right):
                 bot.db.execute("UPDATE jobs SET state='cancelled' WHERE id=?", (job["id"],))
                 continue
-            from html import escape
+            from .presentation import rich_text, using_presentation
 
-            await bot.tg.send(job["chat"], escape(job["text"]))
+            with using_presentation(bot.db.chat(job["chat"])["settings"]):
+                await bot.tg.send(job["chat"], rich_text(job["text"]))
             bot.db.execute("UPDATE jobs SET state='sent' WHERE id=?", (job["id"],))
         except (APIError, httpx.HTTPError):
             attempts = job["attempts"] + 1
@@ -169,6 +170,7 @@ async def maintenance(bot, stop):
             await bot.engine.flush()
             await bot.community.enforce_federations(now)
             await bot.growth.draw(now)
+            await bot.hub.expire(now)
             await bot.billing.expire(bot.admin)
             await captcha_expiry(bot, now)
             await scheduled_posts(bot, now)

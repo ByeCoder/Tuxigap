@@ -2,10 +2,19 @@ from .i18n import tr
 from html import escape
 
 
-def button(label, data):
+def button(label, data, style=None, icon=None):
     if len(data.encode()) > 64:
         raise ValueError(tr("m_8bf43876c3b2"))
-    return {"text": str(label), "callback_data": data}
+    result = {"text": str(label), "callback_data": data}
+    if style:
+        if style not in {"primary", "success", "danger"}:
+            raise ValueError("Choose primary, success, or danger for a button style.")
+        result["style"] = style
+    if icon:
+        if not str(icon).isdigit():
+            raise ValueError("Please use a numeric custom emoji ID.")
+        result["icon_custom_emoji_id"] = str(icon)
+    return result
 
 
 def admin_keyboard(chat, section, conf):
@@ -15,6 +24,7 @@ def admin_keyboard(chat, section, conf):
     back = [b(tr("m_a8d900e5c14d"), "home")]
     if section == "home":
         return [
+            [button(tr("hub.staff"), f"h:{chat}:staff")],
             [b(tr("m_abfc8eb5dbde"), "mod"), b(tr("m_e8597a4b3755"), "stats")],
             [b(tr("m_1c03940d19c4"), "learn"), b(tr("m_9d4414d525e9"), "fun")],
             [b(tr("m_a76fb49d1fb2"), "plans"), b(tr("m_69dfaa570f31"), "content")],
@@ -107,6 +117,7 @@ def fun_keyboard(chat):
         return button(label, f"f:{chat}:{route}")
 
     return [
+        [button(tr("hub.games"), f"h:{chat}:games")],
         [b(tr("m_e9c16c89a000"), "invite"), b(tr("m_2305d58ec122"), "referrals")],
         [
             b(tr("m_94699447fe47"), "truth"),

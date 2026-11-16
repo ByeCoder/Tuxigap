@@ -30,6 +30,11 @@ METRICS = {
     "referrals": lazy("m_0887a9f55462"),
     "engine_calls": lazy("m_9c794f45ef88"),
     "engine_errors": lazy("m_b07fe117573d"),
+    "join_requests": lazy("hub.requests"),
+    "requests_approved": lazy("hub.accepted_metric"),
+    "requests_declined": lazy("hub.declined_metric"),
+    "party_rounds": lazy("hub.party_metric"),
+    "calls_started": lazy("hub.calls_metric"),
 }
 
 

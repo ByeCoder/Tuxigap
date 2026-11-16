@@ -49,7 +49,7 @@ To restore, stop the service, replace the database with the backup, and remove o
 ## Upgrades
 
 - Back up first and keep the old image/source revision available.
-- Version 0.3 adds schema version 2. The additive migration retains earlier data and adds new community tables.
+- Version 0.3 adds schema version 3. The additive migration retains earlier data and adds new community tables.
 - An older binary must not run against a newer schema.
 - Test your configuration with `--check`, then monitor queues, logs and membership behavior after restart.
 - Pin tested external engine images and retain the Studio source commit.
@@ -80,3 +80,6 @@ Telegram sends and SQLite commits are not atomic together. Notices/posts can rep
 The bot masks network failures in logs so token-bearing Telegram URLs aren't dumped. Protect the host and `.env` too: an operator can read the SQLite database. Rotate leaked keys and bot tokens with their issuing service.
 
 No remote shell/eval command is exposed. The dashboard uses a separate random bearer key, bounded request bodies, fixed static routes and no permissive CORS. Its key grants broad owner access; share it only with people you trust to manage every group in that installation.
+
+
+Version 0.4 stores bot staff roles, local tags, observed member presence, pending join requests, call events and group-game state in the same backed-up SQLite database. Event/request details follow message retention; aggregate counters and scoreboards remain. `/forget` removes the new personal tag/presence/staff/request/score records only after self-confirmation; payment records remain for reconciliation. Future activity can recreate membership records.

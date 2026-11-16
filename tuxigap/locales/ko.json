@@ -173,5 +173,17 @@
   "m_4e972589c0a4": "계속하면 판매 약관에 동의하게 돼요: ",
   "m_e2ae258a70c2": "자동 갱신을 취소했어요. 결제한 기간이 끝날 때까지 이용할 수 있어요. 🌷",
   "m_ea3ad3b8f7a8": "✅ 환불을 기록하고 이용 기간을 다시 계산했어요.",
-  "m_650c8fd7acd2": "아직 활성 멤버십이 없어요. 준비되면 /shop 에서 살펴보세요. 🌷"
+  "m_650c8fd7acd2": "아직 활성 멤버십이 없어요. 준비되면 /shop 에서 살펴보세요. 🌷",
+  "hub.staff": "🧰 운영진 패널",
+  "hub.analytics": "📊 통계",
+  "hub.members": "👥 멤버",
+  "hub.requests": "📨 가입 요청",
+  "hub.tags": "🏷 멤버 태그",
+  "hub.calls": "📞 그룹 통화",
+  "hub.games": "🎲 그룹 게임",
+  "hub.channel": "📣 채널 도구",
+  "hub.roles": "🪪 운영진 역할",
+  "hub.appearance": "🎨 버튼과 이모지",
+  "hub.lifecycle": "👋 가입과 탈퇴",
+  "hub.native_panel": "⚙️ 전체 관리자 패널"
 }

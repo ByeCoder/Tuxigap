@@ -39,7 +39,7 @@ Use the giveaway's entry button to participate for free. Each person gets one en
 | `/delete`, `/pin` | Reply; requires the corresponding Telegram admin right |
 | `/approve`, `/unapprove` | Mark/revoke a trusted local-moderation exemption; doesn't grant paid access |
 | `/spam`, `/ham` | Reply to teach a labeled example; no silent deletion |
-| `/stats day|week|month|year` | Read a current-period report |
+| `/stats day\|week\|month\|year` | Read a current-period report |
 | `/aiquiz TOPIC` | Generate a four-option quiz when AI and games are enabled |
 | `/refund CHARGE_ID` | Request a Stars refund, then confirm with a button |
 | `/cancel` | Leave a pending text-entry flow |
@@ -67,3 +67,26 @@ A federation is a shared ban policy **you explicitly choose to trust**. Its owne
 6. The group owner can leave with `/fedleave`. Existing bans remain for local review.
 
 Jobs are persistent and versioned, so outdated queued decisions are skipped. The target's current admin role is protected in each group. Reversal only lifts a known federation-applied ban, and it respects a tracked manual ban or unpaid membership gate. Telegram and local storage aren't one atomic transaction; concurrent outside actions can still need human review.
+
+## Staff, ranks and membership
+
+| Command | Who / behavior |
+|---|---|
+| `/staffpanel`, `/staff` | Current admins or assigned bot staff; private `/staffpanel CHAT_ID` also works |
+| `/roles`, `/role USER_ID ROLE` | Actual owner lists/assigns manager, moderator, editor, host, analyst or none; replying also works |
+| `/promote ROLE [\| TITLE]`, `/demote`, `/admintitle TITLE` | Actual Telegram promotion permission; reply or specify user ID; bot-editable targets only |
+| `/rank`, `/ranks`, `/rankset LADDER` | Progress, ladder, owner-only threshold changes |
+| `/tag`, `/untag`, `/tags`, `/tagmembers LABEL TEXT` | Local member labels; tag staff manage others; members can see their own |
+| `/membertag LABEL` | Visible Telegram member tag; Manage tags permission required |
+| `/members` | Observed membership overview for analytics staff |
+| `/joinmode manual\|auto\|trusted\|off`, `/requests` | Join policy and persistent review buttons; paid/federation checks take priority |
+| `/template welcome\|goodbye\|rules TEXT` | Friendly group templates; welcome/goodbye support `{name}` |
+| `/theme primary\|success\|danger\|default` | Admin-controlled Telegram button style |
+| `/buttonemoji ID\|off`, `/emojiid`, `/emojitext TEXT` | Custom button icon, inspect emoji ID, safe text preview |
+| `/callpanel`, `/calllink URL\|off`, `/callannounce` | Event tracking and invitations; no native Bot API call start/end or music streaming |
+| `/channel`, `/chatinfo` | Live chat information and linked community ID |
+| `/post`, `/editpost`, `/deletepost`, `/pinpost`, `/unpinpost`, `/title`, `/description` | Content tools; private chat requires destination ID before arguments |
+| `/party [MODE]`, `/guess ANSWER`, `/answer ANSWER` | Five shared group games with persistent state |
+| `/stopgame`, `/scores`, `/jokes [CATEGORY]` | Creator/event-staff stop, game scores, bonus English jokes |
+
+The [community guide](COMMUNITY.md), [appearance guide](APPEARANCE.md), and [game guide](GAMES.md) include examples, permission boundaries and limits. Core moderation buttons/commands can be delegated to bot managers/moderators; refunds and global settings remain native-admin-only.

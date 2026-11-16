@@ -173,5 +173,17 @@
   "m_4e972589c0a4": "Ao continuar, você aceita os termos de venda: ",
   "m_e2ae258a70c2": "Renovação automática cancelada. Seu acesso continua até o fim do período pago. 🌷",
   "m_ea3ad3b8f7a8": "✅ Reembolso registrado. O período de acesso foi recalculado.",
-  "m_650c8fd7acd2": "Você ainda não tem uma assinatura ativa. Veja /shop quando quiser. 🌷"
+  "m_650c8fd7acd2": "Você ainda não tem uma assinatura ativa. Veja /shop quando quiser. 🌷",
+  "hub.staff": "🧰 Painel da equipe",
+  "hub.analytics": "📊 Estatísticas",
+  "hub.members": "👥 Membros",
+  "hub.requests": "📨 Solicitações",
+  "hub.tags": "🏷 Etiquetas",
+  "hub.calls": "📞 Chamadas em grupo",
+  "hub.games": "🎲 Jogos em grupo",
+  "hub.channel": "📣 Ferramentas do canal",
+  "hub.roles": "🪪 Funções da equipe",
+  "hub.appearance": "🎨 Botões e emojis",
+  "hub.lifecycle": "👋 Entradas e saídas",
+  "hub.native_panel": "⚙️ Administração completa"
 }

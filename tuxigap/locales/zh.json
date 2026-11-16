@@ -173,5 +173,17 @@
   "m_4e972589c0a4": "继续即表示你同意销售条款：",
   "m_e2ae258a70c2": "已取消自动续费，你仍可使用到当前付费周期结束。🌷",
   "m_ea3ad3b8f7a8": "✅ 已记录退款，并重新计算访问期限。",
-  "m_650c8fd7acd2": "你还没有有效会员资格，准备好后可以看看 /shop。🌷"
+  "m_650c8fd7acd2": "你还没有有效会员资格，准备好后可以看看 /shop。🌷",
+  "hub.staff": "🧰 管理面板",
+  "hub.analytics": "📊 统计",
+  "hub.members": "👥 成员",
+  "hub.requests": "📨 入群申请",
+  "hub.tags": "🏷 成员标签",
+  "hub.calls": "📞 群组通话",
+  "hub.games": "🎲 群组游戏",
+  "hub.channel": "📣 频道工具",
+  "hub.roles": "🪪 团队角色",
+  "hub.appearance": "🎨 按钮与表情",
+  "hub.lifecycle": "👋 加入与离开",
+  "hub.native_panel": "⚙️ 完整管理面板"
 }
