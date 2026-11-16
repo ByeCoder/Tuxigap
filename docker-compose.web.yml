@@ -1,0 +1,20 @@
+# Optional owner dashboard; only loopback is published on the host.
+services:
+  dashboard:
+    build: .
+    command: [python, -m, tuxigap.dashboard]
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE: /app/data/tuxigap.sqlite3
+      WEB_HOST: 0.0.0.0
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - tuxigap-data:/app/data
+    healthcheck:
+      disable: true
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]

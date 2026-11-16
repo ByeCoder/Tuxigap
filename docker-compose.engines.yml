@@ -1,0 +1,29 @@
+# Optional real tg-spam engine. No Telegram token is passed to the engine.
+# Run with: docker compose -f docker-compose.yml -f docker-compose.engines.yml up -d --build
+services:
+  tuxigap:
+    environment:
+      SPAM_ENGINES: ${SPAM_ENGINES}
+      SPAM_ENGINE_PASSWORD: ${SPAM_ENGINE_PASSWORD:?Set a strong engine password in .env}
+      NO_PROXY: spam-engine,localhost,127.0.0.1
+    depends_on:
+      - spam-engine
+  spam-engine:
+    image: ghcr.io/umputun/tg-spam:latest
+    restart: unless-stopped
+    environment:
+      SERVER_ENABLED: "true"
+      SERVER_LISTEN: :8080
+      SERVER_AUTH: ${SPAM_ENGINE_PASSWORD:?Set a strong engine password in .env}
+      PARANOID: "true"
+      TELEGRAM_TOKEN: ""
+      TELEGRAM_GROUP: ""
+      CAS_TOKEN: ${CAS_TOKEN:-}
+    ports:
+      - 127.0.0.1:8081:8080
+    volumes:
+      - spam-data:/srv/data
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  spam-data:

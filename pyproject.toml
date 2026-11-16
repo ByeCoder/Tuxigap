@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tuxigap"
+version = "0.2.0"
+description = "Persian-first Telegram community management, analytics, games and Stars access"
+requires-python = ">=3.12"
+dependencies = ["httpx[socks]==0.28.1", "python-dotenv>=1.0,<2", "tzdata>=2025.1"]
+readme = "README.md"
+license = "MIT"
+authors = [{name = "ByeCoder"}]
+
+[project.urls]
+Repository = "https://github.com/ByeCoder/Tuxigap"
+Issues = "https://github.com/ByeCoder/Tuxigap/issues"
+
+[project.optional-dependencies]
+dev = ["ruff>=0.9,<1"]
+
+[project.scripts]
+tuxigap = "tuxigap.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["tuxigap*"]
+
+[tool.setuptools.package-data]
+tuxigap = ["assets/*.html", "assets/*.js", "assets/*.css"]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
