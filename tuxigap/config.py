@@ -25,6 +25,7 @@ DEFAULTS = {
     "mute_minutes": 10,
     "action": "warn",
     "fun": True,
+    "joke_language": "auto",
     "ai": False,
     "ai_moderation": False,
     "ai_threshold": 0.95,

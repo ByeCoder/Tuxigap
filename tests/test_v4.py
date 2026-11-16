@@ -389,6 +389,6 @@ class HubCase(BotFixture, unittest.IsolatedAsyncioTestCase):
             db.close()
             db = DB(str(path))
             self.assertEqual(db.get("existing"), "hello")
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
             self.assertIsNotNone(db.one("SELECT name FROM sqlite_master WHERE name='admission_requests'"))
             db.close()

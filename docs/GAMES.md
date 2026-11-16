@@ -18,6 +18,4 @@ The first correct puzzle answer wins **20 XP and 10 game coins**. An accepted wo
 
 ## A few jokes for the road
 
-Try `/jokes tech`, `/jokes animals`, or `/jokes everyday`. `/jokes` without a category picks one for you. These bonus packs contain 15 light English jokes; the original `/joke` remains localized where its catalog is translated. Word/riddle content in the new shared rounds is also English so players see the same puzzle; the controls and feedback follow the group's catalog.
-
-There are no entry fees, cash bets, cash-outs or conversions to Stars. Giveaway prizes remain free-entry community activities fulfilled by their admins.
+`/joke` and `/jokes` now use the same [multilingual humor collection](HUMOR.md): 240 jokes in 15 languages, with 80 Persian jokes, language/category selection, likes, favorites and reviewed member suggestions. `/jokes fa student` is a good place to start. Shared word/riddle game content remains English; joke language is independently selectable.

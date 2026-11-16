@@ -1,0 +1,42 @@
+[
+  {
+    "category": "everyday",
+    "text": "J’ai acheté un agenda pour organiser ma vie. Première tâche : retrouver l’agenda."
+  },
+  {
+    "category": "everyday",
+    "text": "Mon réveil est optimiste : chaque matin, il croit que je me lèverai à la première sonnerie."
+  },
+  {
+    "category": "everyday",
+    "text": "J’ai fait une liste de tâches. Le sentiment du devoir accompli suffit pour aujourd’hui."
+  },
+  {
+    "category": "tech",
+    "text": "J’ai ouvert un onglet pour ne pas oublier. J’ai maintenant 47 rappels, sans savoir de quoi."
+  },
+  {
+    "category": "tech",
+    "text": "Le code fonctionne sur mon ordinateur. On invite tous les utilisateurs chez moi ?"
+  },
+  {
+    "category": "tech",
+    "text": "La sauvegarde est faite. Prochain projet : retrouver où je l’ai enregistrée."
+  },
+  {
+    "category": "work",
+    "text": "Nous avons fait une réunion sur le manque de temps. Elle a débordé."
+  },
+  {
+    "category": "student",
+    "text": "Le professeur a demandé s’il y avait des questions. Dans le couloir, nous avons créé un groupe de recherche."
+  },
+  {
+    "category": "animals",
+    "text": "Mon chat dort sur le clavier. Le projet avait besoin d’une pause à pattes."
+  },
+  {
+    "category": "animals",
+    "text": "Mon perroquet a appris la sonnerie des messages. Les notifications arrivent même téléphone éteint."
+  }
+]

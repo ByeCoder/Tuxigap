@@ -29,3 +29,12 @@ Exact source revisions are recorded in `third_party/upstream-lock.json`. You can
 ## Other dependencies
 
 Python dependencies retain their own licenses. `httpx`, `python-dotenv`, `tzdata`, optional `ruff` and optional `playwright` are installed through package metadata; they aren't copied into this source tree. Studio and the spam-engine container retain their upstream dependency notices.
+
+
+## Optional music dependencies (0.5)
+
+The original Tuxigap adapter imports public interfaces from **PyTgCalls 3.0.1**, **NTgCalls 3.0.7** and **Telethon 1.45.0**. PyTgCalls and NTgCalls are LGPL-3.0-or-later; Telethon is MIT. Their preserved notices are in `third_party/pytgcalls`, `third_party/ntgcalls`, and `third_party/telethon`. Package wheels include dependency notices too. No historical music-bot handlers or shell/eval commands were copied into Tuxigap. FFmpeg is installed as a separate system package in the optional image, under its distribution's own build/license terms.
+
+Verified PyTgCalls interface source: [commit 8a4310a658af6426a09eb6cd33ef489550ed0d67](https://github.com/pytgcalls/pytgcalls/tree/8a4310a658af6426a09eb6cd33ef489550ed0d67), declaring version 3.0.1. See [music setup](docs/MUSIC.md) and the offline dependency contract check.
+
+The new multilingual joke packs are a small Tuxigap-maintained collection, with original relatable Persian lines and adaptations of common short everyday humor. They are not scraped from an external joke service.

@@ -109,7 +109,7 @@ Only future incoming requests are available to the bot; an old backlog created b
 
 Copy the actual call link from Telegram. Only HTTPS `t.me` links are accepted; Tuxigap does not verify that the session is currently running. Invitations have a one-minute sender cooldown. A host bot role can share invitations; `/promote host` gives a human actual Telegram call-management rights when the bot and acting admin may grant them.
 
-**The Bot API does not expose starting/ending group calls, muting individual call participants, or streaming music.** Use Telegram's own call controls for those actions. This release includes no hidden user-account session or userbot. The panel calls its state “latest observed event”, since the bot cannot query a complete live call roster through the Bot API.
+**The Bot API does not expose starting/ending group calls, muting individual call participants, or streaming music.** Use Telegram's own call controls for those actions. Music playback is available through the explicitly authorized [optional helper-account worker](MUSIC.md), with separate setup. There is no hidden account session. The panel calls its state “latest observed event”, since the bot cannot query a complete live call roster through the Bot API.
 
 ## Channels and linked discussion groups
 

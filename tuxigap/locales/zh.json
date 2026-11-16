@@ -185,5 +185,16 @@
   "hub.roles": "🪪 团队角色",
   "hub.appearance": "🎨 按钮与表情",
   "hub.lifecycle": "👋 加入与离开",
-  "hub.native_panel": "⚙️ 完整管理面板"
+  "hub.native_panel": "⚙️ 完整管理面板",
+  "music.title": "🎵 通话音乐",
+  "music.pause": "⏸ 暂停",
+  "music.resume": "▶️ 继续",
+  "music.skip": "⏭ 下一首",
+  "music.stop": "⏹ 停止并离开",
+  "music.queue": "📜 播放队列",
+  "music.library": "🎼 曲库",
+  "humor.like": "❤️ 喜欢",
+  "humor.save": "⭐ 收藏",
+  "humor.next": "🎲 再来一个",
+  "humor.languages": "🌐 笑话语言"
 }

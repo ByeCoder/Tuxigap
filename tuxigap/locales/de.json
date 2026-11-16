@@ -185,5 +185,16 @@
   "hub.roles": "🪪 Teamrollen",
   "hub.appearance": "🎨 Schaltflächen & Emoji",
   "hub.lifecycle": "👋 Ein- und Austritte",
-  "hub.native_panel": "⚙️ Adminbereich"
+  "hub.native_panel": "⚙️ Adminbereich",
+  "music.title": "🎵 Anrufmusik",
+  "music.pause": "⏸ Pause",
+  "music.resume": "▶️ Fortsetzen",
+  "music.skip": "⏭ Weiter",
+  "music.stop": "⏹ Stoppen und verlassen",
+  "music.queue": "📜 Warteschlange",
+  "music.library": "🎼 Bibliothek",
+  "humor.like": "❤️ Gefällt mir",
+  "humor.save": "⭐ Speichern",
+  "humor.next": "🎲 Noch ein Witz",
+  "humor.languages": "🌐 Witzsprachen"
 }

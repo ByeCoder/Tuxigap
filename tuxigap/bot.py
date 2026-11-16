@@ -15,6 +15,8 @@ from .engines import SpamEngine
 from .growth import Growth, TRUTHS, DARES, FORTUNES
 from .community import Community
 from .hub import Hub, COMMANDS as HUB_COMMANDS, rank_for
+from .humor import Humor, COMMANDS as HUMOR_COMMANDS, public_joke
+from .music import Music, COMMANDS as MUSIC_COMMANDS
 from .presentation import rich_text, using_presentation
 from .ported import fun as ported_fun
 from .ported.locks import LOCK_TYPES
@@ -91,6 +93,8 @@ class Bot:
         self.growth = Growth(self)
         self.community = Community(self)
         self.hub = Hub(self)
+        self.humor = Humor(self)
+        self.music = Music(self)
         self.bot_id = db.get("bot_id", 0)
         self.username = db.get("bot_username", "")
 
@@ -264,7 +268,7 @@ class Bot:
                     "type": "article",
                     "id": secrets.token_hex(4),
                     "title": tr("m_2704d1c5035a"),
-                    "input_message_content": {"message_text": str(secrets.choice(games.JOKES))},
+                    "input_message_content": {"message_text": str(public_joke())},
                 },
                 {
                     "type": "article",
@@ -466,6 +470,10 @@ class Bot:
         private = m["chat"]["type"] == "private"
         if not user:
             return
+        if cmd in HUMOR_COMMANDS:
+            return await self.humor.command(cmd, args, m)
+        if cmd in MUSIC_COMMANDS:
+            return await self.music.command(cmd, args, m)
         if cmd in HUB_COMMANDS:
             return await self.hub.command(cmd, args, m)
         if cmd in ("language", "lang"):
@@ -877,7 +885,7 @@ class Bot:
             self.db.bump(chat, "games")
             return await self.tg.call("sendDice", chat_id=destination, emoji="🎲")
         if action == "joke":
-            return await self.tg.send(destination, secrets.choice(games.JOKES))
+            return await self.humor.send(chat, user, destination)
         if action == "daily":
             return await self.tg.send(destination, games.daily(self.db, chat, user, conf["timezone"]))
         if action == "top":
@@ -987,6 +995,10 @@ class Bot:
         destination, mid = m["chat"]["id"], m["message_id"]
         parts = q.get("data", "").split(":")
         route = parts[0]
+        if route == "j":
+            return await self.humor.callback(q, parts)
+        if route == "m":
+            return await self.music.callback(q, parts)
         if route == "h":
             return await self.hub.callback(q, parts)
         if route == "l":
@@ -1316,6 +1328,17 @@ class Bot:
                     "party_attempts",
                 ):
                     self.db.execute(f"DELETE FROM {table} WHERE user=?", (user,))
+                self.db.execute("DELETE FROM joke_reactions WHERE user=?", (user,))
+                self.db.execute("DELETE FROM joke_history WHERE chat=?", (user,))
+                self.db.execute("DELETE FROM community_jokes WHERE author=?", (user,))
+                self.db.execute(
+                    "UPDATE music_jobs SET actor=0 WHERE actor=? AND state NOT IN ('pending','running')",
+                    (user,),
+                )
+                self.db.execute(
+                    "UPDATE music_queue SET actor=0 WHERE actor=? AND state NOT IN ('queued','playing')",
+                    (user,),
+                )
                 self.db.execute("UPDATE party_games SET winner=0 WHERE winner=?", (user,))
                 self.db.execute("DELETE FROM members WHERE user=?", (user,))
                 self.db.execute("UPDATE messages SET text='' WHERE user=?", (user,))
@@ -1659,7 +1682,7 @@ class Bot:
             or message.get("from", {})
         )
         route = update.get("callback_query", {}).get("data", "").split(":")
-        if len(route) > 1 and route[0] in ("h", "a", "f", "u"):
+        if len(route) > 1 and route[0] in ("h", "a", "f", "u", "j", "m"):
             try:
                 source_chat = int(route[1])
                 if self.db.one("SELECT 1 FROM chats WHERE id=?", (source_chat,)):

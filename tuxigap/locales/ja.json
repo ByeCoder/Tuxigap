@@ -185,5 +185,16 @@
   "hub.roles": "🪪 スタッフ権限",
   "hub.appearance": "🎨 ボタンと絵文字",
   "hub.lifecycle": "👋 参加と退出",
-  "hub.native_panel": "⚙️ 管理者パネル"
+  "hub.native_panel": "⚙️ 管理者パネル",
+  "music.title": "🎵 通話の音楽",
+  "music.pause": "⏸ 一時停止",
+  "music.resume": "▶️ 再開",
+  "music.skip": "⏭ 次へ",
+  "music.stop": "⏹ 停止して退出",
+  "music.queue": "📜 キュー",
+  "music.library": "🎼 ライブラリ",
+  "humor.like": "❤️ いいね",
+  "humor.save": "⭐ 保存",
+  "humor.next": "🎲 もう一つ",
+  "humor.languages": "🌐 ジョークの言語"
 }

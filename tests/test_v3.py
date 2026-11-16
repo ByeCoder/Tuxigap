@@ -279,7 +279,7 @@ class OperationsCase(unittest.TestCase):
                 )
             db = DB(str(path))
             self.assertEqual(db.get("legacy"), 42)
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
             self.assertEqual(db.all("SELECT * FROM federations"), [])
             db.close()
 

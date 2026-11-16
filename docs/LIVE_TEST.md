@@ -70,3 +70,14 @@ Finally, rehearse backup/restore and a clean restart. Record the component versi
 - Post/edit/pin/unpin/delete in a private test channel; verify linked-group settings stay separate.
 - Start/end/schedule a group call manually in Telegram and observe events; test the invitation link and human host privileges.
 - Play all five `/party` modes with two accounts; check five-attempt limits, one winner, persisted scores and disabled activities.
+
+
+## Optional music and multilingual humor
+
+- On your own trusted terminal, authorize a helper user account and keep `.env.music` out of Git. Add it to a disposable test group and start the call manually.
+- Check the group allowlist, actual call-manager rights and bot host/manager roles; revoke a role after queuing and verify the worker refuses the request.
+- Play an allowed Telegram audio attachment and a local library track. Confirm audible output, pause/resume, volume, repeat, shuffle, skip, queue removal and stop/leave.
+- Restart during playback and confirm no surprise autoplay; `/mresume` explicitly starts the interrupted item again.
+- Stop the call externally and remove/mute the helper; verify useful errors and safe manual recovery. Test a pending stop during conversion.
+- Confirm the main bot remains the only Bot API poller and payment/moderation remain responsive while the music worker is busy.
+- Try Persian jokes and another language, exhaust a small category deck, test likes/favorites, staff review and cross-community boundaries.

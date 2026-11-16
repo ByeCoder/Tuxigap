@@ -1,0 +1,42 @@
+[
+  {
+    "category": "everyday",
+    "text": "Ich habe einen Planer gekauft, um mein Leben zu ordnen. Erste Aufgabe: den Planer finden."
+  },
+  {
+    "category": "everyday",
+    "text": "Mein Wecker ist Optimist. Er glaubt jeden Morgen, dass ich beim ersten Klingeln aufstehe."
+  },
+  {
+    "category": "everyday",
+    "text": "Ich habe eine Aufgabenliste geschrieben. Das Erfolgserlebnis reicht für heute."
+  },
+  {
+    "category": "tech",
+    "text": "Ich öffnete einen Tab, um nichts zu vergessen. Jetzt habe ich 47 Erinnerungen und keine Ahnung woran."
+  },
+  {
+    "category": "tech",
+    "text": "Auf meinem Computer funktioniert der Code. Laden wir alle Nutzer zu mir ein?"
+  },
+  {
+    "category": "tech",
+    "text": "Das Backup ist fertig. Nächstes Projekt: herausfinden, wo ich es gespeichert habe."
+  },
+  {
+    "category": "work",
+    "text": "Wir besprachen in einer Sitzung, warum wir keine Zeit haben. Sie dauerte länger."
+  },
+  {
+    "category": "student",
+    "text": "Der Dozent fragte nach Fragen. Im Flur gründeten wir sofort eine Forschungsgruppe."
+  },
+  {
+    "category": "animals",
+    "text": "Die Katze schläft auf der Tastatur. Das Projekt brauchte wohl den Ruhemodus."
+  },
+  {
+    "category": "animals",
+    "text": "Mein Papagei kann den Nachrichtenton. Jetzt gibt es Benachrichtigungen bei ausgeschaltetem Handy."
+  }
+]

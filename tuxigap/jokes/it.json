@@ -1,0 +1,42 @@
+[
+  {
+    "category": "everyday",
+    "text": "Ho comprato un’agenda per organizzare la vita. Primo compito: trovare l’agenda."
+  },
+  {
+    "category": "everyday",
+    "text": "La mia sveglia è ottimista: ogni mattina crede che mi alzerò al primo squillo."
+  },
+  {
+    "category": "everyday",
+    "text": "Ho scritto la lista delle cose da fare. La soddisfazione basta per oggi."
+  },
+  {
+    "category": "tech",
+    "text": "Ho aperto una scheda per non dimenticare. Ora ho 47 promemoria e non ricordo di cosa."
+  },
+  {
+    "category": "tech",
+    "text": "Il codice funziona sul mio computer. Invitiamo tutti gli utenti a casa mia?"
+  },
+  {
+    "category": "tech",
+    "text": "Il backup è pronto. Prossimo progetto: ricordare dove l’ho salvato."
+  },
+  {
+    "category": "work",
+    "text": "Abbiamo fatto una riunione sulla mancanza di tempo. È andata per le lunghe."
+  },
+  {
+    "category": "student",
+    "text": "Il professore ha chiesto se c’erano domande. In corridoio abbiamo fondato un gruppo di ricerca."
+  },
+  {
+    "category": "animals",
+    "text": "Il gatto dorme sulla tastiera. Il progetto aveva bisogno di una pausa con le zampe."
+  },
+  {
+    "category": "animals",
+    "text": "Il pappagallo ha imparato il suono delle notifiche. Arrivano anche a telefono spento."
+  }
+]

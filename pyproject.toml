@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tuxigap"
-version = "0.4.0"
+version = "0.5.0"
 description = "Friendly multilingual Telegram community management, analytics, games and Stars access"
 requires-python = ">=3.12"
 dependencies = ["httpx[socks]==0.28.1", "python-dotenv>=1.0,<2", "tzdata>=2025.1"]
@@ -20,6 +20,7 @@ Issues = "https://github.com/ByeCoder/Tuxigap/issues"
 [project.optional-dependencies]
 dev = ["ruff>=0.9,<1"]
 browser = ["playwright>=1.50,<2"]
+music = ["py-tgcalls==3.0.1", "Telethon==1.45.0", "ntgcalls==3.0.7"]
 
 [project.scripts]
 tuxigap = "tuxigap.__main__:main"
@@ -28,7 +29,7 @@ tuxigap = "tuxigap.__main__:main"
 include = ["tuxigap*"]
 
 [tool.setuptools.package-data]
-tuxigap = ["assets/*.html", "assets/*.js", "assets/*.css", "locales/*.json"]
+tuxigap = ["assets/*.html", "assets/*.js", "assets/*.css", "locales/*.json", "jokes/*.json"]
 
 [tool.ruff]
 line-length = 110

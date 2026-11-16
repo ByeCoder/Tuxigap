@@ -10,7 +10,7 @@ Meet **Tuxigap** (تاکسی گپ): moderation, community games, useful analytic
 
 **English is the default** for the bot, dashboard, and documentation. Choose another interface language with `/language` or **Settings → Language**. Your own rules, notes and posts stay exactly as you wrote them.
 
-> **Release 0.4.0 · integration testing matters.** Automated tests cover local behavior and mocked service contracts. Please complete the [live test guide](docs/LIVE_TEST.md) before real moderation or paid sales. New groups start in dry-run mode so you can settle in safely.
+> **Release 0.5.0 · integration testing matters.** Automated tests cover local behavior and mocked service contracts. Please complete the [live test guide](docs/LIVE_TEST.md) before real moderation or paid sales. New groups start in dry-run mode so you can settle in safely.
 
 ## Find your way around
 
@@ -146,17 +146,35 @@ Version **0.4** adds a dedicated staff hub, owner-assigned bot roles, customizab
 /party number
 ```
 
-Explore [staff, ranks, tags and membership](docs/COMMUNITY.md), [buttons and custom emoji](docs/APPEARANCE.md), [group games](docs/GAMES.md), and the [changelog](CHANGELOG.md). Telegram eligibility applies to custom emoji. Call tools track events, share links and assign human hosts; starting/ending a call and streaming music stay in Telegram's own call controls.
+Explore [staff, ranks, tags and membership](docs/COMMUNITY.md), [buttons and custom emoji](docs/APPEARANCE.md), [group games](docs/GAMES.md), and the [changelog](CHANGELOG.md). Telegram eligibility applies to custom emoji. Call tools track events, share links and assign human hosts; starting/ending a call stays in Telegram’s own controls. An [optional helper-account music worker](docs/MUSIC.md) now adds audio playback and queue controls.
+
+## More smiles, more music
+
+Version **0.5** brings [240 multilingual jokes](docs/HUMOR.md), including **80 Persian jokes**, with nonrepeating decks, language buttons, likes, favorites and reviewed member suggestions. Try `/jokes fa student` or `/jokelanguages`.
+
+The optional [music worker](docs/MUSIC.md) plays a local library or Telegram audio attachment in an existing call, with queue, pause/resume, skip, stop, shuffle, repeat and volume controls. It needs **your own helper user account session**, FFmpeg, an allowlisted group and an active call. The bot token alone cannot stream into a call. Live call playback has not been tested with a real account here.
+
+```text
+/jokes fa
+/jokes any
+/jokefavorites
+/music
+# Reply to a Telegram audio attachment:
+/mplay
+/mqueue
+```
 
 ## What you can do
 
 | Area | Available features |
 |---|---|
+| **Optional call music** | PyTgCalls/Telethon helper, Telegram audio or local library, persistent queue/control jobs, pause/resume, skip/stop, volume, repeat and shuffle |
+| **Multilingual humor** | 240 offline jokes, 15 languages, 80 Persian lines, per-chat decks, likes, favorites and staff-reviewed suggestions |
 | **Staff & identity** | Inline staff hub, owner-assigned manager/moderator/editor/host/analyst roles, protected hierarchy, actual admin presets, custom rank ladders and member tags |
 | **Arrivals & requests** | Welcome/goodbye templates, observed presence, persistent accept/decline buttons, optional automatic/trusted approval and paid/federation checks |
 | **Appearance** | Blue/green/red Telegram button styles, custom emoji icons, safe emoji text markers and ordinary-emoji fallback |
 | **Calls & channels** | Call events/invitations, human call hosts, channel/group post/edit/delete/pin, title/description and linked-community information |
-| **Shared group games** | Guess the number, scramble, riddles, math sprint, word chain, persistent scores and 15 bonus jokes |
+| **Shared group games** | Guess the number, scramble, riddles, math sprint, word chain, persistent scores and 240 offline jokes in 15 languages, including 80 Persian jokes |
 | **Inline administration** | Settings, member action buttons, bans/unbans, timed mutes/unmutes, warnings, warning reset, delete, pin, emergency lockdown and permission restore |
 | **Content protection** | Flood and duplicate checks, Persian/Arabic text normalization, blocked words/phrases, hidden links, forwards, media, stickers and bots |
 | **Advanced locks** | 40+ ported Studio lock types: contact, phone, email, polls, albums, custom emoji, animated/premium stickers, inline bots, forward types, scripts and more |
@@ -194,7 +212,7 @@ English is the reference and default. These language choices are available:
 - The owner dashboard has its own interface selector and a separate group-language setting.
 - Persian, Arabic and Hebrew use RTL in the dashboard.
 - AI answers and generated quizzes use the group's selected language.
-- Languages share the same features. **Translation coverage varies**: English and Persian cover the full reference catalog; other languages localize core menus and use friendly English for missing advanced messages. Bonus word/riddle rounds and joke packs are English. Nothing depends on a live translation service.
+- Languages share the same features. **Translation coverage varies**: English and Persian cover the full reference catalog; other languages localize core menus and use friendly English for missing advanced messages. Bonus word/riddle rounds remain English; the separate joke packs now cover all 15 languages. Nothing depends on a live translation service.
 - Admin-authored rules, posts, notes and historical audit content are not automatically translated.
 
 Want to help improve a translation? [Here's the short guide](docs/LANGUAGES.md). The check script verifies interpolation placeholders so names, prices and dates stay safe.
@@ -308,9 +326,11 @@ docker compose exec tuxigap python -m tuxigap --backup /app/data/backup.sqlite3
 docker compose down
 ```
 
-Don't copy a live SQLite file with plain `cp`; use the backup command. Keep backups private. Before upgrading from 0.2, make a backup; schema versions 1 and 2 upgrade additively to version 3. Never run an older release against a newer schema.
+Don't copy a live SQLite file with plain `cp`; use the backup command. Keep backups private. Before upgrading from 0.2, make a backup; schema versions 1–3 upgrade additively to version 4. Never run an older release against a newer schema.
 
 [Operations](docs/OPERATIONS.md) covers restores, queues, storage, secrets, logging, health, proxies, and deployment boundaries.
+
+Music stays an explicit opt-in: follow [MUSIC.md](docs/MUSIC.md), then use `python tools/manage.py up --music`. It is not silently included in `--all`.
 
 ## Develop with us
 
@@ -322,7 +342,7 @@ python -m unittest discover -s tests -v
 python tools/check_translations.py
 ```
 
-The 109 tests use fake Telegram/AI responses and local HTTP servers. They do not move real Stars or moderate real communities. CI checks Python 3.12/3.13, builds the Docker image, and exercises the dashboard in Chromium, including language switching and mobile layout. [Validation](docs/VALIDATION.md) records what was actually run.
+The 133 tests use fake Telegram/AI responses and local HTTP servers. They do not move real Stars or moderate real communities. CI checks Python 3.12/3.13, builds the Docker image, and exercises the dashboard in Chromium, including language switching and mobile layout. [Validation](docs/VALIDATION.md) records what was actually run.
 
 Please keep `.env`, database files, backups, real user data and payment IDs out of commits. You'll find friendly contribution and security notes in [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
@@ -336,13 +356,13 @@ Please keep `.env`, database files, backups, real user data and payment IDs out 
 - Learning means labeled examples and similarity/context, **not autonomous fine-tuning** or reading every manual deletion.
 - Image review is optional AI assistance, not a guarantee to catch every image or every form of abuse.
 - Automatic migration from a basic group ID to a new supergroup ID is not implemented. Start with a supergroup.
-- The native core doesn't include every legacy anime/download/weather module or a voice-chat music player. Studio's broader features are available through the separate companion, with its own setup and language coverage.
+- The native core does not include every legacy anime/download/weather module. Voice-chat music is an optional separately authorized MTProto worker, not a Bot API-only feature. Studio's broader features are available through the separate companion, with its own setup and language coverage.
 - Translation coverage and service integration status are documented openly; please help us polish them rather than assuming an unchecked feature is production-ready.
 
 ## Credits and license
 
 Tuxigap is developed by **ByeCoder**. This release includes credited adaptations from **Zero Two**, **AstrakoBot**, and **tg-bot-studio**, plus an optional real **tg-spam** service. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), the pinned [upstream manifest](third_party/upstream-lock.json), and each preserved license.
 
-**Version 0.4.0 is distributed under GPL-3.0-only** because it now includes GPL-covered adaptations. Earlier original Tuxigap code was published under MIT; its notice is preserved in `third_party/tuxigap-v0.2/LICENSE`. Please preserve upstream attribution and license notices when sharing your version.
+**Version 0.5.0 is distributed under GPL-3.0-only** because it now includes GPL-covered adaptations. Earlier original Tuxigap code was published under MIT; its notice is preserved in `third_party/tuxigap-v0.2/LICENSE`. Please preserve upstream attribution and license notices when sharing your version.
 
 Thanks for building kind, lively communities with us. 🌷

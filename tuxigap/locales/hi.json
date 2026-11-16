@@ -185,5 +185,16 @@
   "hub.roles": "🪪 टीम भूमिकाएँ",
   "hub.appearance": "🎨 बटन और इमोजी",
   "hub.lifecycle": "👋 आगमन और प्रस्थान",
-  "hub.native_panel": "⚙️ पूरा व्यवस्थापक पैनल"
+  "hub.native_panel": "⚙️ पूरा व्यवस्थापक पैनल",
+  "music.title": "🎵 कॉल संगीत",
+  "music.pause": "⏸ रोकें",
+  "music.resume": "▶️ जारी रखें",
+  "music.skip": "⏭ अगला",
+  "music.stop": "⏹ बंद करके निकलें",
+  "music.queue": "📜 कतार",
+  "music.library": "🎼 संगीत संग्रह",
+  "humor.like": "❤️ पसंद",
+  "humor.save": "⭐ सहेजें",
+  "humor.next": "🎲 एक और",
+  "humor.languages": "🌐 चुटकुलों की भाषाएँ"
 }

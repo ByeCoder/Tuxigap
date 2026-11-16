@@ -1,0 +1,30 @@
+# Optional helper USER account, not another Bot API poller. Read docs/MUSIC.md first.
+services:
+  music:
+    build:
+      context: .
+      dockerfile: Dockerfile.music
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env
+      - .env.music
+    environment:
+      DATABASE: /app/data/tuxigap.sqlite3
+      MUSIC_ENABLED: "1"
+      MUSIC_LIBRARY: /app/data/music/library.json
+      MUSIC_MEDIA: /app/data/music/media
+    volumes:
+      - tuxigap-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

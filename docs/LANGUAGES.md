@@ -31,3 +31,6 @@ Studio is a separately maintained upstream companion; its languages and translat
 Catalogs are loaded offline. No runtime translation service receives your members' messages. Missing keys use English; invalid interpolation uses the safe English template.
 
 Language state uses Python ContextVar so concurrent groups and payment processing don't overwrite each other's language. Private payment delivery reads the purchaser's chosen private-chat language.
+
+
+Joke content now has its own `tuxigap/jokes/*.json` packs in all 15 languages, independently of advanced UI translation coverage. English/Persian reference catalogs include all current keys. The international joke packs adapt common themes; they are not a runtime translation of member messages.

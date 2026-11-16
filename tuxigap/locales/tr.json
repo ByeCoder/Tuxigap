@@ -185,5 +185,16 @@
   "hub.roles": "🪪 Ekip rolleri",
   "hub.appearance": "🎨 Düğmeler ve emoji",
   "hub.lifecycle": "👋 Giriş ve çıkışlar",
-  "hub.native_panel": "⚙️ Yönetici paneli"
+  "hub.native_panel": "⚙️ Yönetici paneli",
+  "music.title": "🎵 Arama müziği",
+  "music.pause": "⏸ Duraklat",
+  "music.resume": "▶️ Sürdür",
+  "music.skip": "⏭ Sonraki",
+  "music.stop": "⏹ Durdur ve çık",
+  "music.queue": "📜 Sıra",
+  "music.library": "🎼 Kitaplık",
+  "humor.like": "❤️ Beğen",
+  "humor.save": "⭐ Kaydet",
+  "humor.next": "🎲 Bir şaka daha",
+  "humor.languages": "🌐 Şaka dilleri"
 }

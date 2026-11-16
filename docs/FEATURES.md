@@ -1,4 +1,4 @@
-# What is available in 0.3.0?
+# What is available in 0.5.0?
 
 | Capability | Where it lives | Integration status |
 |---|---|---|
@@ -22,7 +22,8 @@
 | Gregorian calendar periods | Native core | Implemented |
 | Solar Hijri report periods | Native core | Not implemented |
 | Full legacy anime/weather/downloader handler trees | Not imported | Not claimed as native features |
-| Voice-chat music bot | Not included | Not implemented |
+| Call music with queue controls | Optional helper-account MTProto worker | Implemented, fake-engine and real dependency/media contracts tested; live account/call test still required |
+| 240 multilingual jokes, favorites and suggestions | Native offline packs + scoped community content | 15 languages, including 80 Persian jokes; review/permission/deck tests |
 | A single shared ledger/login/token for all companion services | Not included | Deliberately not claimed |
 
 No row marked as implemented means “independently security-audited” or “tested with your real bot token.” Please follow the live test guide before launch.

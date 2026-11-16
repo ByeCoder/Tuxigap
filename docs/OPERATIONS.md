@@ -49,7 +49,7 @@ To restore, stop the service, replace the database with the backup, and remove o
 ## Upgrades
 
 - Back up first and keep the old image/source revision available.
-- Version 0.3 adds schema version 3. The additive migration retains earlier data and adds new community tables.
+- Version 0.3 used schema 2, version 0.4 used schema 3, and version 0.5 uses schema 4. The additive migration retains earlier data and adds new community tables.
 - An older binary must not run against a newer schema.
 - Test your configuration with `--check`, then monitor queues, logs and membership behavior after restart.
 - Pin tested external engine images and retain the Studio source commit.
@@ -83,3 +83,6 @@ No remote shell/eval command is exposed. The dashboard uses a separate random be
 
 
 Version 0.4 stores bot staff roles, local tags, observed member presence, pending join requests, call events and group-game state in the same backed-up SQLite database. Event/request details follow message retention; aggregate counters and scoreboards remain. `/forget` removes the new personal tag/presence/staff/request/score records only after self-confirmation; payment records remain for reconciliation. Future activity can recreate membership records.
+
+
+The optional music worker shares the same upgraded database, but takes its own process lock and never polls bot updates. Stop the core and music worker together for a restore. Protect `.env.music` separately from the database. Music queues/current state and joke feedback live in the backed-up database; audio files/cache and the operator library need their own volume backup. Completed control history follows retention, while pending/current queue entries remain. Cached Telegram uploads unused by a pending/current track expire after seven days. See [MUSIC.md](MUSIC.md) for restart behavior and session revocation.

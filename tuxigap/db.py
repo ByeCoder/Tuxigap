@@ -80,6 +80,13 @@ CREATE TABLE IF NOT EXISTS call_events(chat INTEGER,mid INTEGER,kind TEXT,ts INT
 CREATE TABLE IF NOT EXISTS party_games(id INTEGER PRIMARY KEY,chat INTEGER,mode TEXT,data TEXT,creator INTEGER,expires INTEGER,state TEXT DEFAULT 'open',winner INTEGER);
 CREATE TABLE IF NOT EXISTS party_attempts(game INTEGER,user INTEGER,n INTEGER,PRIMARY KEY(game,user));
 CREATE TABLE IF NOT EXISTS party_scores(chat INTEGER,user INTEGER,points INTEGER,rounds INTEGER,PRIMARY KEY(chat,user));
+CREATE TABLE IF NOT EXISTS joke_history(chat INTEGER,language TEXT,joke TEXT,ts INTEGER,PRIMARY KEY(chat,language,joke));
+CREATE TABLE IF NOT EXISTS joke_reactions(chat INTEGER,user INTEGER,joke TEXT,action TEXT,PRIMARY KEY(chat,user,joke,action));
+CREATE TABLE IF NOT EXISTS community_jokes(id TEXT PRIMARY KEY,chat INTEGER,language TEXT,category TEXT,text TEXT,author INTEGER,created INTEGER,state TEXT DEFAULT 'pending',reviewer INTEGER DEFAULT 0);
+CREATE TABLE IF NOT EXISTS music_jobs(id INTEGER PRIMARY KEY AUTOINCREMENT,chat INTEGER,actor INTEGER,action TEXT,payload TEXT,request TEXT UNIQUE,created INTEGER,state TEXT DEFAULT 'pending',error TEXT DEFAULT '');
+CREATE TABLE IF NOT EXISTS music_queue(id INTEGER PRIMARY KEY AUTOINCREMENT,chat INTEGER,actor INTEGER,title TEXT,payload TEXT,position INTEGER,source_job INTEGER UNIQUE,state TEXT DEFAULT 'queued');
+CREATE TABLE IF NOT EXISTS music_state(chat INTEGER PRIMARY KEY,status TEXT DEFAULT 'idle',current INTEGER DEFAULT 0,volume INTEGER DEFAULT 70,repeat_mode TEXT DEFAULT 'off',started REAL DEFAULT 0,duration REAL DEFAULT 0,paused_at REAL DEFAULT 0);
+
 """
 
 
@@ -91,13 +98,13 @@ class DB:
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA synchronous=FULL")
         version = self.conn.execute("PRAGMA user_version").fetchone()[0]
-        if version > 3:
+        if version > 4:
             self.conn.close()
             raise RuntimeError("Database is newer than this code. Upgrade Tuxigap first.")
         self.conn.executescript(SCHEMA)
-        if version < 3:
+        if version < 4:
             with self.transaction():
-                self.execute("PRAGMA user_version=3")
+                self.execute("PRAGMA user_version=4")
 
     def close(self):
         self.conn.close()
@@ -237,6 +244,15 @@ class DB:
             self.execute("DELETE FROM join_events WHERE ts<?", (now - 86400,))
             self.execute("DELETE FROM member_events WHERE ts<?", (cutoff,))
             self.execute("DELETE FROM call_events WHERE ts<?", (cutoff,))
+            self.execute(
+                "DELETE FROM community_jokes WHERE state IN ('pending','rejected') AND created<?", (cutoff,)
+            )
+            self.execute(
+                "DELETE FROM music_jobs WHERE state NOT IN ('pending','running') AND created<?", (cutoff,)
+            )
+            self.execute(
+                "DELETE FROM music_queue WHERE state NOT IN ('queued','playing') AND source_job NOT IN (SELECT id FROM music_jobs)"
+            )
             self.execute("DELETE FROM admission_requests WHERE requested<?", (cutoff,))
             self.execute("DELETE FROM party_games WHERE expires<?", (now - 86400,))
             self.execute("DELETE FROM party_attempts WHERE game NOT IN (SELECT id FROM party_games)")

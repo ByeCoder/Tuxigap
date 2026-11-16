@@ -1,0 +1,42 @@
+[
+  {
+    "category": "everyday",
+    "text": "Compré una agenda para ordenar mi vida. Primera tarea: encontrar la agenda."
+  },
+  {
+    "category": "everyday",
+    "text": "Mi despertador es optimista: cada mañana cree que me levantaré a la primera."
+  },
+  {
+    "category": "everyday",
+    "text": "Hice una lista de tareas. Por hoy ya tengo suficiente sensación de logro."
+  },
+  {
+    "category": "tech",
+    "text": "Abrí otra pestaña para no olvidarlo. Ahora tengo 47 recordatorios y no recuerdo de qué."
+  },
+  {
+    "category": "tech",
+    "text": "El código funciona en mi ordenador. ¿Invitamos a todos los usuarios a casa?"
+  },
+  {
+    "category": "tech",
+    "text": "Ya hice la copia de seguridad. El próximo proyecto es recordar dónde la guardé."
+  },
+  {
+    "category": "work",
+    "text": "Organizamos una reunión para averiguar por qué no tenemos tiempo. Se alargó."
+  },
+  {
+    "category": "student",
+    "text": "El profesor preguntó si había dudas. En el pasillo fundamos un grupo de investigación."
+  },
+  {
+    "category": "animals",
+    "text": "Mi gato se durmió sobre el teclado. El proyecto necesitaba una pausa con patas."
+  },
+  {
+    "category": "animals",
+    "text": "Mi loro aprendió el sonido de las notificaciones. Ahora llegan incluso con el móvil apagado."
+  }
+]

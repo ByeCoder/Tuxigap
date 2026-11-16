@@ -1,5 +1,13 @@
 # What's new
 
+## 0.5.0
+
+- 240 offline jokes in 15 languages, including 80 Persian jokes; language/category selection, per-chat nonrepeating decks, likes, favorites and reviewed local submissions.
+- Optional PyTgCalls/Telethon/FFmpeg music worker with explicit helper-account authorization, group allowlist, persistent queue/control jobs and live permission checks.
+- Telegram audio and local library playback, pause/resume, skip/stop, volume, repeat, shuffle, queue removal and safe interrupted/restart states.
+- Music Docker image/Compose launcher, private session-creation helper, real offline dependency/media contract checks and preserved optional-dependency licenses.
+- Updated English repository description, operator guides and schema 3 → 4. 24 additional regression tests (133 total), plus the separate real music contract script.
+
 ## 0.4.0
 
 - Staff hub with live authorization, owner-assigned bot roles, delegated member controls, actual Telegram admin presets and protected staff hierarchy.

@@ -87,6 +87,24 @@ Jobs are persistent and versioned, so outdated queued decisions are skipped. The
 | `/channel`, `/chatinfo` | Live chat information and linked community ID |
 | `/post`, `/editpost`, `/deletepost`, `/pinpost`, `/unpinpost`, `/title`, `/description` | Content tools; private chat requires destination ID before arguments |
 | `/party [MODE]`, `/guess ANSWER`, `/answer ANSWER` | Five shared group games with persistent state |
-| `/stopgame`, `/scores`, `/jokes [CATEGORY]` | Creator/event-staff stop, game scores, bonus English jokes |
+| `/stopgame`, `/scores`, `/jokes [CATEGORY]` | Creator/event-staff stop, game scores, multilingual joke packs |
 
 The [community guide](COMMUNITY.md), [appearance guide](APPEARANCE.md), and [game guide](GAMES.md) include examples, permission boundaries and limits. Core moderation buttons/commands can be delegated to bot managers/moderators; refunds and global settings remain native-admin-only.
+
+
+## Humor and optional call music
+
+| Command | What it does |
+|---|---|
+| `/jokes [LANG] [CATEGORY]`, `/joke` | Offline jokes; default follows the chat/personal language; `any` chooses a random language |
+| `/jokedefault LANG` | Prefer a joke language independently of the interface; group admins or personal private preference |
+| `/jokelanguages` | Language buttons without changing the interface |
+| `/joketop`, `/jokefavorites` | Community likes and your saved jokes |
+| `/jokesuggest LANG \| CATEGORY \| TEXT`, `/jokereview` | Scoped community submission and staff review |
+| `/music`, `/mlibrary`, `/mqueue`, `/mjobs` | Music panel, local library, queue and recent job status |
+| `/mplay [TRACK_ID]` | Queue a local track or reply to a Telegram audio attachment |
+| `/mpause`, `/mresume`, `/mskip`, `/mstop` | Pause, resume, next track, or stop/leave and cancel the queue |
+| `/mvolume 1–100`, `/mrepeat off\|one\|all`, `/mshuffle` | Volume, repeat and pending-queue shuffle |
+| `/mremove ENTRY_ID`, `/mclear` | Remove a pending entry or clear pending tracks |
+
+Music is disabled initially and requires an explicitly authorized helper account, an allowlisted group and an existing call. Only current call admins or assigned hosts/managers can control it. Start with [MUSIC.md](MUSIC.md); joke examples and language counts are in [HUMOR.md](HUMOR.md).

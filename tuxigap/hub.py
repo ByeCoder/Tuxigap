@@ -7,7 +7,7 @@ import time
 from urllib.parse import urlparse
 
 from .i18n import tr, using_language
-from .party import Party, JOKES
+from .party import Party
 from .presentation import STYLES, rich_text
 from .ui import button
 
@@ -95,7 +95,6 @@ COMMANDS = {
     "answer",
     "stopgame",
     "scores",
-    "jokes",
 }
 
 
@@ -177,6 +176,8 @@ class Hub:
         ]:
             if await self.allowed(chat, user, capability):
                 rows.append([button(tr(label), f"h:{chat}:{route}") for label, route in routes])
+        if await self.allowed(chat, user, "events", "can_manage_video_chats"):
+            rows.append([button(tr("music.title"), f"m:{chat}:panel")])
         if native:
             rows += [
                 [button(tr("hub.native_panel"), f"a:{chat}:home")],
@@ -792,17 +793,6 @@ class Hub:
             self.db.execute("UPDATE party_games SET state='cancelled' WHERE id=?", (game["id"],))
         elif cmd == "scores":
             return await self.tg.send(destination, self.party.scores(chat))
-        elif cmd == "jokes":
-            if not conf["fun"]:
-                raise ValueError(tr("m_150682b0ae9a"))
-            if not self.db.cooldown(chat, actor, "jokes", 10):
-                return
-            import secrets
-
-            if args and args not in JOKES:
-                raise ValueError(tr("party.joke_help"))
-            category = args or secrets.choice(list(JOKES))
-            return await self.tg.send(chat, escape(secrets.choice(JOKES[category])))
         self.db.audit(chat, 0, 0, actor, "hub_command", cmd)
         await self.tg.send(destination, tr("hub.saved"))
 

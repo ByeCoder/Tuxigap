@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+!.env.music.example
 data/
 backups/
 *.db
@@ -17,3 +18,6 @@ dist/
 .coverage
 coverage.json
 browser-artifacts/
+
+*.session
+*.session-journal

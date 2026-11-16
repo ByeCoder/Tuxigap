@@ -1,0 +1,122 @@
+[
+  {
+    "category": "everyday",
+    "text": "I made a to-do list. Writing it down felt productive enough for one day."
+  },
+  {
+    "category": "everyday",
+    "text": "My alarm clock is an optimist. It still believes I will get up on the first ring."
+  },
+  {
+    "category": "everyday",
+    "text": "I went for a walk to clear my head. Now my thoughts have better scenery."
+  },
+  {
+    "category": "everyday",
+    "text": "I bought a planner to organize my life. First task: find the planner."
+  },
+  {
+    "category": "everyday",
+    "text": "I put my phone down to focus. Now I am focused on where I put it."
+  },
+  {
+    "category": "everyday",
+    "text": "I am great at saving things for later. Especially tasks."
+  },
+  {
+    "category": "tech",
+    "text": "My code works on my computer. Shall we invite all the users over?"
+  },
+  {
+    "category": "tech",
+    "text": "I opened a new tab so I would not forget. Now I have 47 reminders and no idea why."
+  },
+  {
+    "category": "tech",
+    "text": "I made a backup. My next project is remembering where I saved it."
+  },
+  {
+    "category": "tech",
+    "text": "The computer asked me to restart. Finally, advice I can follow."
+  },
+  {
+    "category": "tech",
+    "text": "I fixed one bug and three others appeared. My code has a loyalty program."
+  },
+  {
+    "category": "tech",
+    "text": "I named the folder final. It now contains final-two and actually-final."
+  },
+  {
+    "category": "student",
+    "text": "I studied for three hours. Two were spent choosing the perfect study playlist."
+  },
+  {
+    "category": "student",
+    "text": "Our group project has a fantastic name. We are still working on the project part."
+  },
+  {
+    "category": "student",
+    "text": "I opened my notes and discovered that past me had been writing riddles."
+  },
+  {
+    "category": "student",
+    "text": "I put the book under my pillow. So far, only the neck pain has transferred."
+  },
+  {
+    "category": "student",
+    "text": "The deadline is my most reliable motivational speaker."
+  },
+  {
+    "category": "student",
+    "text": "I cleaned my desk before studying. The desk passed; I am still revising."
+  },
+  {
+    "category": "work",
+    "text": "We scheduled a meeting to find out why we have no time. It ran long."
+  },
+  {
+    "category": "work",
+    "text": "My calendar is so full of meetings that I need an appointment to do the work."
+  },
+  {
+    "category": "work",
+    "text": "The email said “one quick question”. There goes lunch."
+  },
+  {
+    "category": "work",
+    "text": "I delivered the task early. The reward was another task."
+  },
+  {
+    "category": "work",
+    "text": "We postponed the planning meeting to plan a better time for it."
+  },
+  {
+    "category": "work",
+    "text": "I work from home. My commute is one swivel of the chair."
+  },
+  {
+    "category": "animals",
+    "text": "My cat sleeps on the laptop. Apparently the project needed a paws button."
+  },
+  {
+    "category": "animals",
+    "text": "My parrot learned the notification sound. Now my phone pings even when it is off."
+  },
+  {
+    "category": "animals",
+    "text": "My turtle says it is not late; it is appreciating the journey."
+  },
+  {
+    "category": "animals",
+    "text": "The cat preferred the gift box. Five stars for packaging, no comment on the gift."
+  },
+  {
+    "category": "animals",
+    "text": "My dog brought a ball to the meeting. Finally, a clear action item."
+  },
+  {
+    "category": "animals",
+    "text": "The snail moved house. The neighbors did not notice."
+  }
+]

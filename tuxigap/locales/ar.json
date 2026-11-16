@@ -185,5 +185,16 @@
   "hub.roles": "🪪 أدوار الفريق",
   "hub.appearance": "🎨 الأزرار والرموز",
   "hub.lifecycle": "👋 الدخول والخروج",
-  "hub.native_panel": "⚙️ الإدارة الكاملة"
+  "hub.native_panel": "⚙️ الإدارة الكاملة",
+  "music.title": "🎵 موسيقى المكالمة",
+  "music.pause": "⏸ إيقاف مؤقت",
+  "music.resume": "▶️ متابعة",
+  "music.skip": "⏭ التالي",
+  "music.stop": "⏹ إيقاف وخروج",
+  "music.queue": "📜 قائمة الانتظار",
+  "music.library": "🎼 المكتبة",
+  "humor.like": "❤️ أعجبني",
+  "humor.save": "⭐ حفظ",
+  "humor.next": "🎲 نكتة أخرى",
+  "humor.languages": "🌐 لغات النكت"
 }

@@ -185,5 +185,16 @@
   "hub.roles": "🪪 Роли команды",
   "hub.appearance": "🎨 Кнопки и эмодзи",
   "hub.lifecycle": "👋 Вход и выход",
-  "hub.native_panel": "⚙️ Панель администратора"
+  "hub.native_panel": "⚙️ Панель администратора",
+  "music.title": "🎵 Музыка в звонке",
+  "music.pause": "⏸ Пауза",
+  "music.resume": "▶️ Продолжить",
+  "music.skip": "⏭ Следующий",
+  "music.stop": "⏹ Стоп и выйти",
+  "music.queue": "📜 Очередь",
+  "music.library": "🎼 Библиотека",
+  "humor.like": "❤️ Нравится",
+  "humor.save": "⭐ Сохранить",
+  "humor.next": "🎲 Ещё шутку",
+  "humor.languages": "🌐 Языки шуток"
 }

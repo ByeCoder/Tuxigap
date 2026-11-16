@@ -185,5 +185,16 @@
   "hub.roles": "🪪 운영진 역할",
   "hub.appearance": "🎨 버튼과 이모지",
   "hub.lifecycle": "👋 가입과 탈퇴",
-  "hub.native_panel": "⚙️ 전체 관리자 패널"
+  "hub.native_panel": "⚙️ 전체 관리자 패널",
+  "music.title": "🎵 통화 음악",
+  "music.pause": "⏸ 일시 정지",
+  "music.resume": "▶️ 재개",
+  "music.skip": "⏭ 다음",
+  "music.stop": "⏹ 정지 후 나가기",
+  "music.queue": "📜 재생 대기열",
+  "music.library": "🎼 라이브러리",
+  "humor.like": "❤️ 좋아요",
+  "humor.save": "⭐ 저장",
+  "humor.next": "🎲 하나 더",
+  "humor.languages": "🌐 농담 언어"
 }

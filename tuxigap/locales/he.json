@@ -185,5 +185,16 @@
   "hub.roles": "🪪 תפקידי צוות",
   "hub.appearance": "🎨 כפתורים ואימוג׳י",
   "hub.lifecycle": "👋 הצטרפות ועזיבה",
-  "hub.native_panel": "⚙️ ניהול מלא"
+  "hub.native_panel": "⚙️ ניהול מלא",
+  "music.title": "🎵 מוזיקה בשיחה",
+  "music.pause": "⏸ השהיה",
+  "music.resume": "▶️ המשך",
+  "music.skip": "⏭ הבא",
+  "music.stop": "⏹ עצירה ויציאה",
+  "music.queue": "📜 תור",
+  "music.library": "🎼 ספרייה",
+  "humor.like": "❤️ אהבתי",
+  "humor.save": "⭐ שמירה",
+  "humor.next": "🎲 עוד בדיחה",
+  "humor.languages": "🌐 שפות הבדיחות"
 }

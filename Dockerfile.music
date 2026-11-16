@@ -1,0 +1,13 @@
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml README.md LICENSE THIRD_PARTY_NOTICES.md ./
+COPY third_party ./third_party
+COPY tuxigap ./tuxigap
+RUN pip install --no-cache-dir '.[music]' \
+    && useradd --uid 10001 --create-home appuser \
+    && mkdir -p /app/data && chown -R appuser:appuser /app/data
+USER appuser
+CMD ["python", "-m", "tuxigap.music_worker"]
