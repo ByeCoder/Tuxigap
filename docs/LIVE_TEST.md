@@ -1,33 +1,59 @@
-# آزمون زندهٔ لازم قبل از استفادهٔ عمومی
+# Take a careful first drive
 
-این آزمون‌ها در بسته انجام نشده‌اند چون توکن و گروه تست ارائه نشده است.
-از حساب/ربات تست مطابق مستندات رسمی Telegram استفاده کنید؛ توکن تولید را به endpoint تست متصل نکنید.
-مسیر API تست در آداپتر خود پروژه پشتیبانی می‌شود و با متغیر زیر فعال می‌شود؛
-نشانی پایهٔ API را برای فعال‌کردن این حالت تغییر ندهید.
+Local tests are a useful start, but they don't prove a live Telegram/payment setup. Please use a private test community before enabling real moderation or selling access.
 
-## محیط
+## Choose the right environment
 
-از BotFather در محیط تست یک ربات بسازید و توکن آن را تنظیم کنید. `TELEGRAM_TEST_MODE=1` را در `.env` قرار دهید.
-از یک گروه خصوصی **تست** و دو حساب کاربری مجزا، یکی مدیر و یکی عضو عادی، استفاده کنید.
-درگاه تست رسمی API `https://api.telegram.org/bot<TEST_TOKEN>/test/<METHOD>` است.
+For official Stars testing, create a user account and bot in Telegram's **separate test environment**, following [Telegram's guide](https://core.telegram.org/bots/features#dedicated-test-environment). Put that test bot's token in `.env` and set:
 
-## سناریوها
+```dotenv
+TELEGRAM_TEST_MODE=1
+```
 
-1. ربات را ادمین کنید؛ `/panel` و پنل خصوصی باز شوند. عضو عادی نتواند تنظیم را عوض کند.
-2. دسترسی مدیر را بردارید؛ دکمهٔ قبلی و ورودی متنی بازمانده رد شوند.
-3. واژهٔ آزمایشی تعریف کنید؛ با حالت آزمایشی پیام حذف نشود؛ با خاموش‌کردن آن حذف شود.
-4. پیام‌های پشت‌سرهم، تکرار، لینک مخفی و کپشن را امتحان کنید؛ حد اخطار و سکوت اعمال شوند.
-5. روی پیام عضو `/manage` بزنید؛ دکمهٔ اخطار و سکوت کار کنند و روی مدیر اعمال نشوند.
-6. کپچا را فعال کنید؛ عضو تازه‌وارد فقط با حساب خودش پاسخ دهد؛ مجوزهای پیش‌فرض برگردند.
-7. نمونهٔ اسپم را با `/spam` آموزش دهید؛ پیام مشابه بازبینی بخواهد؛ نمونهٔ سالم اشتباه را اصلاح کند.
-8. کوییز، پاسخ تکراری، دکمهٔ کاربر دیگر در سنگ‌کاغذقیچی و پاداش روزانه را امتحان کنید.
-9. آمار و CSV را بررسی کنید؛ مرز نیمه‌شب تهران و شروع هفتهٔ انتخابی درست باشند.
-10. طرح تست Stars بسازید؛ خریدار درست تأیید شود و فرد دوم با لینک خریدار وارد نشود.
-11. یک پرداخت موفق را دوباره به محیط محلی تست تزریق کنید؛ دسترسی دوباره تمدید نشود.
-12. پس از پرداخت، خصوصی ربات را ببندید؛ تحویل در صف بماند و بعد از بازکردن بهبود یابد.
-13. انقضا، تمدید و بازپرداخت را با دفتر تست بررسی کنید؛ رفع مسدودی دستی مدیر با خرید انجام نشود.
-14. اشتراک دوره‌ای تست بسازید و لغو تمدید را آزمایش کنید.
-15. خاموش/روشن‌کردن سرویس، بازیابی SQLite، ارسال زمان‌بندی‌شده و گزارش تکراری را بررسی کنید.
-16. AI را با کلید تست فعال کنید؛ سهمیه، خروجی نامعتبر و قطع سرویس را امتحان کنید.
+The adapter uses `https://api.telegram.org/bot<TOKEN>/test/METHOD`. Don't send a production token to the test path. Use a fresh database when returning to production and set `TELEGRAM_TEST_MODE=0`.
 
-پس از آزمون، TELEGRAM_TEST_MODE را برای ربات تولید برابر ۰ قرار دهید و یک پایگاه دادهٔ تازه برای تولید بسازید.
+## Walk through the native bot
+
+1. Add the bot to a private supergroup as admin; start its private chat. Open `/panel`.
+2. Let a regular member try an admin button. It should refuse. Remove an admin's role and try their old panel/input flow again.
+3. Set a test blocked phrase. Dry run should flag without deleting. Turn dry run off and verify deletion, warning escalation and timed mute.
+4. Check a hidden text link, media caption, duplicate messages, content locks and a scoped domain allowlist. A trusted domain must not exempt unrelated media.
+5. Use `/manage` against a regular member and against an admin. Admin protection should hold.
+6. Test CAPTCHA with the new member's own account; another account can't solve it for them. Check restored permissions match group defaults.
+7. Set a low anti-raid threshold in a test database and confirm new arrivals are challenged. Test quiet hours across midnight in your timezone.
+8. Teach `/spam` and `/ham`. Confirm examples stay within their group and a learned pattern starts in review mode.
+9. Try the quiz, repeated answers, daily rewards, game badges, a referral rejoin and a free giveaway. No one should pay to enter the giveaway.
+10. Switch private and group languages independently. Test Hebrew/Persian/Arabic RTL in the dashboard. Check a missing translation falls back to readable English.
+11. Review all four report periods, CSV access, a half-hour timezone boundary and deduplicated automatic reports.
+12. Connect a test channel, schedule a post, revoke the creator's rights and verify the scheduled action is cancelled.
+
+## Federations and the optional engine
+
+1. Create a federation, request membership as a group owner and approve it as the federation owner.
+2. Try a request as a regular admin or a decision as someone else; it should refuse.
+3. Share a ban across two test groups; a target who is an admin in one must remain protected there.
+4. Reverse a decision, test stale queued work and check a known manual ban/unpaid membership gate isn't lifted.
+5. Bring the real spam engine online, confirm an authenticated check, label a sample, stop/restart the engine and verify feedback waits safely.
+
+## AI
+
+Enable a low quota on a test provider. Try `/ask`, public-note lookup, opt-in context, `/summary` and an admin `/aiquiz`. Try an invalid JSON verdict, unavailable provider and exhausted quota; local protection should continue.
+
+If using vision, select a vision-capable model, tell your members what is shared, and test a small sample photo. An AI image flag should require human review.
+
+## Paid access
+
+1. Create a private test access plan and verify purchaser, price, duration, terms and renewal information.
+2. Pay in the official test environment. Access must start only after successful payment.
+3. Try forwarding an access link to a second account; only an actively entitled purchaser can join.
+4. Replay a confirmed payment in a local test harness; charge deduplication must prevent double extension.
+5. Block the bot's private chat after payment, then unblock it; entitlement must remain, and delivery should recover.
+6. Test expiry, renewal arriving during expiry, manual-ban preservation and `/subscriptions` link recovery.
+7. Confirm an authorized refund and inspect the recalculated ledger. A recurring refund should cancel future renewal.
+8. Preserve an unmatched confirmed payment for human reconciliation rather than discarding it.
+
+## Full-suite deployment
+
+Studio needs its own different bot token, credentials, public HTTPS configuration for Mini Apps and its own upstream testing. Its ledger and languages are separate. Avoid enabling two competing moderators in the same group.
+
+Finally, rehearse backup/restore and a clean restart. Record the component versions you actually tested. Thanks for giving your community a thoughtful launch. 🌷

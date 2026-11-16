@@ -1,0 +1,22 @@
+[
+  {
+    "name": "zero",
+    "repo": "Black-Bulls-Bots/zerotwobot",
+    "sha": "6f2da0d530a2adeecbebd1c4dc526e4a5144ee03"
+  },
+  {
+    "name": "astrako",
+    "repo": "Astrako/AstrakoBot",
+    "sha": "528a5ccb620ac7a56487ef5cc7a20ed716ff3d7c"
+  },
+  {
+    "name": "studio",
+    "repo": "sametcn99/tg-bot-studio",
+    "sha": "aadeb562a1e047b271ceab144b6b220343ed2837"
+  },
+  {
+    "name": "tgspam",
+    "repo": "umputun/tg-spam",
+    "sha": "38d872729ffc0de816a152bd86dda055d54637fc"
+  }
+]

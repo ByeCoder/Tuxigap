@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tuxigap"
-version = "0.2.0"
-description = "Persian-first Telegram community management, analytics, games and Stars access"
+version = "0.3.0"
+description = "Friendly multilingual Telegram community management, analytics, games and Stars access"
 requires-python = ">=3.12"
 dependencies = ["httpx[socks]==0.28.1", "python-dotenv>=1.0,<2", "tzdata>=2025.1"]
 readme = "README.md"
-license = "MIT"
+license = "GPL-3.0-only"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "third_party/*/LICENSE"]
 authors = [{name = "ByeCoder"}]
 
 [project.urls]
@@ -18,6 +19,7 @@ Issues = "https://github.com/ByeCoder/Tuxigap/issues"
 
 [project.optional-dependencies]
 dev = ["ruff>=0.9,<1"]
+browser = ["playwright>=1.50,<2"]
 
 [project.scripts]
 tuxigap = "tuxigap.__main__:main"
@@ -26,7 +28,7 @@ tuxigap = "tuxigap.__main__:main"
 include = ["tuxigap*"]
 
 [tool.setuptools.package-data]
-tuxigap = ["assets/*.html", "assets/*.js", "assets/*.css"]
+tuxigap = ["assets/*.html", "assets/*.js", "assets/*.css", "locales/*.json"]
 
 [tool.ruff]
 line-length = 110

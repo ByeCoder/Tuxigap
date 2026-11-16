@@ -1,0 +1,26 @@
+# Optional full upstream Studio companion. Keep its bot tokens separate from BOT_TOKEN.
+# Source is pinned; upstream GPL license is preserved in third_party/studio/LICENSE.
+services:
+  studio:
+    build:
+      context: https://github.com/sametcn99/tg-bot-studio.git#aadeb562a1e047b271ceab144b6b220343ed2837
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      ADMIN_MASTER_KEY: ${STUDIO_ADMIN_KEY:?Please set STUDIO_ADMIN_KEY in .env}
+      JWT_SECRET: ${STUDIO_JWT_SECRET:?Please set STUDIO_JWT_SECRET in .env}
+      APP_URL: ${STUDIO_URL:-http://localhost:3000}
+      DATA_DIR: /app/data
+      DB_PATH: /app/data/studio.sqlite
+      TRUST_PROXY: "1"
+      WEBHOOKS_ALLOW_PRIVATE: "0"
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - studio-data:/app/data
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  studio-data:

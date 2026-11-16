@@ -4,6 +4,8 @@ Bearer authentication, no cookies/CORS, fixed static paths, bounded JSON request
 Bind to loopback by default; use a TLS reverse proxy for remote access.
 """
 
+from .i18n import tr
+
 import hmac
 import html
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -17,13 +19,14 @@ from .bot import BOOL_FIELDS
 from .config import Config
 from .db import DB
 from .stats import report
+from .i18n import LANGUAGES, catalog, using_language
 
 ASSETS = Path(__file__).with_name("assets")
 
 
 def make_handler(config, token):
     if len(token) < 32:
-        raise ValueError("WEB_TOKEN must contain at least 32 characters")
+        raise ValueError(tr("m_e1020c58772a"))
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "Tuxigap"
@@ -57,6 +60,11 @@ def make_handler(config, token):
 
         def do_GET(self):
             parsed = urlparse(self.path)
+            if parsed.path.startswith("/locales/") and parsed.path.endswith(".json"):
+                code = parsed.path[len("/locales/") : -len(".json")]
+                if code in LANGUAGES:
+                    return self.respond(200, catalog(code))
+                return self.respond(404, {"error": "Language not found"})
             static = {
                 "/": ("index.html", "text/html; charset=utf-8"),
                 "/app.js": ("app.js", "text/javascript; charset=utf-8"),
@@ -70,23 +78,27 @@ def make_handler(config, token):
         def do_POST(self):
             path = urlparse(self.path).path
             if not self.authorized():
-                return self.respond(401, {"error": "دسترسی معتبر نیست."})
+                return self.respond(401, {"error": tr("m_af2664d8237d")})
             try:
                 size = int(self.headers.get("Content-Length", "0"))
                 if not 0 < size <= 16384 or not self.headers.get("Content-Type", "").startswith(
                     "application/json"
                 ):
-                    return self.respond(400, {"error": "درخواست JSON تا ۱۶ کیلوبایت لازم است."})
+                    return self.respond(400, {"error": tr("m_d90c1d2e9251")})
                 data = json.loads(self.rfile.read(size))
                 if not isinstance(data, dict):
-                    raise ValueError("درخواست نامعتبر است.")
+                    raise ValueError(tr("m_1955e5c06835"))
                 return self.api(path, data)
             except (ValueError, TypeError):
-                return self.respond(400, {"error": "درخواست معتبر نیست."})
+                return self.respond(400, {"error": tr("m_bf40e15eafad")})
 
         def api(self, path, query):
+            with using_language(self.headers.get("X-Tuxigap-Language", "en")):
+                return self._api(path, query)
+
+        def _api(self, path, query):
             if not self.authorized():
-                return self.respond(401, {"error": "دسترسی معتبر نیست."})
+                return self.respond(401, {"error": tr("m_af2664d8237d")})
             db = DB(config.database)
             try:
                 if self.command == "GET" and path == "/api/chats":
@@ -110,17 +122,16 @@ def make_handler(config, token):
                     )
                 if self.command == "POST" and path == "/api/settings":
                     chat, key, value = int(query["chat"]), query["key"], query["value"]
-                    if key not in BOOL_FIELDS or type(value) is not bool:
-                        raise ValueError(
-                            "فقط گزینه‌های بله/خیرِ مجاز قابل تغییرند؛ دروازهٔ مالی از تلگرام فعال می‌شود."
-                        )
+                    valid_language = key == "language" and isinstance(value, str) and value in LANGUAGES
+                    if not valid_language and (key not in BOOL_FIELDS or type(value) is not bool):
+                        raise ValueError(tr("m_e41fb51517ab"))
                     db.setting(chat, key, value)
                     db.audit(chat, 0, 0, 0, "web_setting", f"{key}={value}")
                     return self.respond(200, {"ok": True})
                 if self.command == "POST" and path == "/api/samples":
                     chat, text, label = int(query["chat"]), query["text"], query["label"]
                     if not isinstance(text, str) or len(text) > 4000:
-                        raise ValueError("متن نامعتبر است.")
+                        raise ValueError(tr("m_b3bea6b951bb"))
                     db.chat(chat)
                     db.train(chat, text, label, 0)
                     if str(chat) in json.loads(config.spam_engines):
@@ -130,7 +141,7 @@ def make_handler(config, token):
                         )
                     db.audit(chat, 0, 0, 0, "web_training", label)
                     return self.respond(200, {"ok": True})
-                return self.respond(404, {"error": "مسیر پیدا نشد."})
+                return self.respond(404, {"error": tr("m_c9f5d2b95a85")})
             except (KeyError, IndexError, TypeError, ValueError) as exc:
                 return self.respond(400, {"error": str(exc)[:200]})
             finally:
@@ -144,7 +155,7 @@ def main():
     token = os.getenv("WEB_TOKEN", "")
     host, port = os.getenv("WEB_HOST", "127.0.0.1"), int(os.getenv("WEB_PORT", "8080"))
     server = ThreadingHTTPServer((host, port), make_handler(config, token))
-    print(f"تاکسی گپ — پنل مالک: http://{host}:{port}")
+    print(tr("m_ccfc307bcfd8", p0=host, p1=port))
     try:
         server.serve_forever()
     except KeyboardInterrupt:

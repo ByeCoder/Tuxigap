@@ -86,7 +86,7 @@ class StoreCase(unittest.TestCase):
             local_check(
                 self.db, CHAT, 2, {"message_id": 6, "text": "6"}, self.db.chat(CHAT)["settings"], 1006
             ).reason,
-            "فلود",
+            "Too many messages too quickly",
         )
 
     def test_hidden_link_and_caption(self):
@@ -181,7 +181,7 @@ class StoreCase(unittest.TestCase):
         self.db.message(CHAT, 2, 3, "after", "text", after)
         text, totals = stats.report(self.db, CHAT, "day", datetime.fromtimestamp(after + 60, timezone.utc))
         self.assertEqual(totals["messages"], 1)
-        self.assertIn("کاربران فعال: 1", text)
+        self.assertIn("Active members: 1", text)
 
     def test_period_boundaries_leap_year_and_week(self):
         now = datetime(2024, 3, 1, 10, tzinfo=timezone.utc)

@@ -1,5 +1,7 @@
 """Single-process SQLite store. No awaits inside transactions; WAL + durable financial ledger."""
 
+from .i18n import tr
+
 from contextlib import contextmanager
 import hashlib
 import json
@@ -57,7 +59,16 @@ CREATE TABLE IF NOT EXISTS referrals(chat INTEGER,user INTEGER,inviter INTEGER,t
 CREATE TABLE IF NOT EXISTS giveaways(token TEXT PRIMARY KEY,chat INTEGER,title TEXT,creator INTEGER,ends INTEGER,
  state TEXT DEFAULT 'open',winner INTEGER DEFAULT 0,notified INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS giveaway_entries(token TEXT,user INTEGER,PRIMARY KEY(token,user));
-PRAGMA user_version=1;
+CREATE TABLE IF NOT EXISTS approved(chat INTEGER,user INTEGER,actor INTEGER,PRIMARY KEY(chat,user));
+CREATE TABLE IF NOT EXISTS afk(chat INTEGER,user INTEGER,text TEXT,since INTEGER,PRIMARY KEY(chat,user));
+CREATE TABLE IF NOT EXISTS join_events(chat INTEGER,user INTEGER,ts INTEGER,PRIMARY KEY(chat,user,ts));
+CREATE INDEX IF NOT EXISTS join_events_ts ON join_events(chat,ts);
+CREATE TABLE IF NOT EXISTS federations(id TEXT PRIMARY KEY,owner INTEGER,name TEXT);
+CREATE TABLE IF NOT EXISTS federation_chats(chat INTEGER PRIMARY KEY,fid TEXT,state TEXT);
+CREATE TABLE IF NOT EXISTS federation_bans(fid TEXT,user INTEGER,reason TEXT,active INTEGER,actor INTEGER,version INTEGER,PRIMARY KEY(fid,user));
+CREATE TABLE IF NOT EXISTS federation_jobs(id INTEGER PRIMARY KEY,fid TEXT,chat INTEGER,user INTEGER,action TEXT,
+ version INTEGER,state TEXT DEFAULT 'pending',due INTEGER,attempts INTEGER DEFAULT 0);
+CREATE TABLE IF NOT EXISTS federation_enforced(fid TEXT,chat INTEGER,user INTEGER,PRIMARY KEY(fid,chat,user));
 """
 
 
@@ -68,9 +79,14 @@ class DB:
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA synchronous=FULL")
-        if self.conn.execute("PRAGMA user_version").fetchone()[0] > 1:
+        version = self.conn.execute("PRAGMA user_version").fetchone()[0]
+        if version > 2:
+            self.conn.close()
             raise RuntimeError("Database is newer than this code. Upgrade Tuxigap first.")
         self.conn.executescript(SCHEMA)
+        if version < 2:
+            with self.transaction():
+                self.execute("PRAGMA user_version=2")
 
     def close(self):
         self.conn.close()
@@ -105,8 +121,15 @@ class DB:
     def chat(self, chat_id):
         row = self.one("SELECT * FROM chats WHERE id=?", (chat_id,))
         if not row:
-            raise ValueError("گروه متصل نیست؛ در گروه /panel را بفرستید.")
+            raise ValueError(tr("m_0ac48bd91130"))
         row["settings"] = DEFAULTS | json.loads(row["settings"])
+        from .i18n import catalog, lazy
+
+        # Built-in defaults follow the UI language; custom admin text stays untouched.
+        for name in ("rules", "welcome_text"):
+            default = DEFAULTS[name]
+            if row["settings"][name] in (str.__str__(default), catalog("fa").get(default.key)):
+                row["settings"][name] = lazy(default.key)
         return row
 
     def register(self, chat):
@@ -160,7 +183,7 @@ class DB:
 
         text = normalize(text)[:4000]
         if len(text) < 8 or label not in ("spam", "ham"):
-            raise ValueError("نمونه باید حداقل ۸ نویسه داشته باشد.")
+            raise ValueError(tr("m_7ccd1b593823"))
         digest = hashlib.sha256(text.encode()).hexdigest()
         self.execute(
             "INSERT OR REPLACE INTO samples VALUES(?,?,?,?,?,?,?)",
@@ -200,6 +223,7 @@ class DB:
         cutoff = now - retention_days * 86400
         with self.transaction():
             self.execute("DELETE FROM messages WHERE ts<?", (cutoff,))
+            self.execute("DELETE FROM join_events WHERE ts<?", (now - 86400,))
             self.execute("UPDATE audit SET text='' WHERE ts<? AND text<>''", (cutoff,))
             self.execute("DELETE FROM samples WHERE ts<?", (now - 90 * 86400,))
             self.execute("DELETE FROM games WHERE expires<?", (now - 86400,))

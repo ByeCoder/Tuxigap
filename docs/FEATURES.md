@@ -1,25 +1,28 @@
-# پوشش امکانات منابع در تاکسی گپ
+# What is available in 0.3.0?
 
-این جدول مرز واقعی نسخهٔ ۰٫۲٫۰ را روشن می‌کند؛ «همهٔ امکانات تمام مخازن» در این نسخه ادعا نمی‌شود.
-
-| خانوادهٔ قابلیت | مسیر در تاکسی گپ | وضعیت |
+| Capability | Where it lives | Integration status |
 |---|---|---|
-| مدیریت گروه از Zero Two / Astrako | پنل اینلاین، مدیریت عضو، قوانین، اخطار، بن، سکوت، قفل، فیلتر و یادداشت | در هسته پیاده شده |
-| فرمان‌های فان مشترک | کوییز، تاس، سنگ‌کاغذقیچی، شوخی، حقیقت/جرئت، فال سرگرمی | در هسته پیاده شده |
-| جذب و حفظ عضو از Studio | معرفی یکتا، امتیاز، سطح، سکه، پاداش روزانه، نشان، جدول رتبه و قرعه‌کشی رایگان | در هسته پیاده شده |
-| مدیریت کانال از Studio | اتصال کانال، پست آینده، لغو صف و طرح دسترسی | در هسته پیاده شده |
-| داشبورد مدیریتی | پنل وب فارسیِ مالک با آمار و تنظیمات و آموزش | در هسته پیاده شده؛ معادل کامل Studio نیست |
-| تشخیص تخصصی tg-spam | سرویس رسمیِ جدا و آداپتر احرازشدهٔ API، صف بازخورد | اتصال پیاده شده؛ سرویس زنده تست نشده |
-| بیزین، CAS و Lua | از موتور جانبی و تنظیمات همان پروژه | وابسته به موتور و پیکربندی اپراتور |
-| AI متنی و یادگیری انسانی | API قابل تنظیم، سهمیه، بازبینی، نمونه‌های سالم/اسپم و تطبیق شباهت | در هسته پیاده شده |
-| آمار چهار دوره | گزارش جاری/کامل‌شده، کاربران فعال، شمارنده‌ها، رتبه، درآمد، CSV | در هسته پیاده شده |
-| فروش اشتراک | Stars، ثابت/۳۰روزهٔ دوره‌ای، انقضا، درخواست ورود، تحویل مجدد، بازپرداخت | در هسته پیاده شده؛ تست واقعی پرداخت لازم است |
-| تحلیل تصویر Shield | تشخیص تصویر و OCR | پیاده نشده |
-| تمام ماژول‌های قدیمی انیمه/دانلود/ترجمه/آب‌وهوا | APIها و وابستگی‌های متعدد منابع قدیمی | پیاده نشده |
-| CRM، RAG فایل، فروشگاه و Mini Appهای Studio | زیرسامانه‌های وب/فروش جدا | پیاده نشده |
-| فدراسیون بن میان گروه‌ها | اشتراک سیاست و فهرست بن | پیاده نشده |
-| چت‌بات با حافظهٔ مکالمهٔ بلندمدت | نگهداری متن گفتگو و بازیابی | پیاده نشده؛ AI فعلی سؤال مستقل + قوانین دارد |
-| تقویم شمسی | بازه‌های تقویمی شمسی | پیاده نشده؛ نمایش وب تاریخ محلی مرورگر، بازه‌ها میلادی هستند |
+| Moderation, warnings, member buttons and permission checks | Native core | Implemented and behavior-tested |
+| 40+ Studio content locks and scoped allowlists | Credited Python port | Implemented and behavior-tested |
+| Selected Zero Two/Astrako fun helpers | Credited native adapters | Implemented and behavior-tested |
+| Flood, blocked phrases, quiet hours, trusted members and join raids | Native core | Implemented and behavior-tested |
+| Federations and queued shared decisions | Native core | Implemented; live multi-group verification still needed |
+| Four calendar-period reports and CSV | Native core/dashboard | Implemented and behavior-tested |
+| English-default interface and 15 language choices | Native catalogs/dashboard | Core menus localized; advanced strings may use English fallback |
+| AI questions, public notes, optional context and summaries | Native provider adapter | Implemented; HTTP contract mocked in tests |
+| AI-generated quizzes and opt-in photo review | Native provider adapter | Implemented; real provider/model validation still needed |
+| Human labels and sample learning | Native core + optional real engine | Implemented; no autonomous fine-tuning claim |
+| XP, daily streaks, badges, referrals and giveaways | Native core | Implemented and behavior-tested |
+| Notes, auto-replies, AFK and content scheduling | Native core | Implemented |
+| Stars memberships, refunds and recovery | Native core | Implemented; official live/test-environment payment verification still needed |
+| Full tg-spam detection and engine UI | Optional upstream service | API adapter and deployment provided; configure/test the actual service |
+| CAS and Lua | Configured inside the upstream engine | Not native reimplementations; engine credentials/settings required |
+| CRM, support desk, flow builder, Mini Apps and commerce | Full pinned Studio companion | Deployment provided; separate bot/token/ledger and upstream configuration |
+| Native owner dashboard and offline demo | Native core | HTTP behavior tested; browser checks tracked in CI |
+| Gregorian calendar periods | Native core | Implemented |
+| Solar Hijri report periods | Native core | Not implemented |
+| Full legacy anime/weather/downloader handler trees | Not imported | Not claimed as native features |
+| Voice-chat music bot | Not included | Not implemented |
+| A single shared ledger/login/token for all companion services | Not included | Deliberately not claimed |
 
-کد منابع GPL در تاکسی گپ کپی نشده است. ادغام بعدی کد واقعی آن منابع نیازمند رعایت مجوز همان کد است.
-این پروژه نباید با بازنویسی README به‌عنوان محصولی دارای قابلیت‌های پیاده‌نشده معرفی شود.
+No row marked as implemented means “independently security-audited” or “tested with your real bot token.” Please follow the live test guide before launch.

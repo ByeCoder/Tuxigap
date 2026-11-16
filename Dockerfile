@@ -1,7 +1,8 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
-COPY pyproject.toml README.md LICENSE ./
+COPY pyproject.toml README.md LICENSE THIRD_PARTY_NOTICES.md ./
+COPY third_party ./third_party
 COPY tuxigap ./tuxigap
 RUN pip install --no-cache-dir . \
     && useradd --uid 10001 --create-home appuser \

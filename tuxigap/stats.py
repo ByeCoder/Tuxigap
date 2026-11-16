@@ -1,3 +1,4 @@
+from .i18n import tr, lazy
 import calendar
 import csv
 from datetime import datetime, timedelta, timezone
@@ -5,25 +6,30 @@ from html import escape
 from io import StringIO
 from zoneinfo import ZoneInfo
 
-PERIODS = {"day": "روزانه", "week": "هفتگی", "month": "ماهانه", "year": "سالانه"}
+PERIODS = {
+    "day": lazy("m_8f6356c7fa64"),
+    "week": lazy("m_f95cdce37682"),
+    "month": lazy("m_3eae222b1a7c"),
+    "year": lazy("m_ce742d42a4be"),
+}
 METRICS = {
-    "messages": "کل پیام",
-    "text": "متنی",
-    "media": "رسانه",
-    "joins": "ورود",
-    "leaves": "خروج",
-    "flagged": "مشکوک",
-    "deleted": "حذف",
-    "warns": "اخطار",
-    "mutes": "سکوت",
-    "bans": "مسدود توسط ربات",
-    "ai_calls": "درخواست هوش مصنوعی",
-    "games": "بازی",
-    "reaction_events": "تغییر واکنش اعضا",
-    "likes": "پسندیدن تعاملی",
-    "referrals": "معرفی معتبر",
-    "engine_calls": "بررسی موتور ضداسپم",
-    "engine_errors": "خطای موتور ضداسپم",
+    "messages": lazy("m_6d82e3189f4d"),
+    "text": lazy("m_d96ce0a50894"),
+    "media": lazy("m_14585ae2b641"),
+    "joins": lazy("m_1a55098b7972"),
+    "leaves": lazy("m_39db927c23ae"),
+    "flagged": lazy("m_a339db8565c2"),
+    "deleted": lazy("m_59ca629220a6"),
+    "warns": lazy("m_4f2f5bdb5ecb"),
+    "mutes": lazy("m_410e49592f5d"),
+    "bans": lazy("m_75d548abbf99"),
+    "ai_calls": lazy("m_3b6f688fb203"),
+    "games": lazy("m_21f93f3a013e"),
+    "reaction_events": lazy("m_97a755ccf002"),
+    "likes": lazy("m_9f23614c3173"),
+    "referrals": lazy("m_0887a9f55462"),
+    "engine_calls": lazy("m_9c794f45ef88"),
+    "engine_errors": lazy("m_b07fe117573d"),
 }
 
 
@@ -38,7 +44,7 @@ def bounds(period, tz="Asia/Tehran", now=None, previous=False, week_start=5):
     elif period == "year":
         start = start.replace(month=1, day=1)
     elif period != "day":
-        raise ValueError("Invalid period")
+        raise ValueError(tr("m_b224adf7e41d"))
     end = current + timedelta(microseconds=1)
     if previous:
         end = start
@@ -84,20 +90,20 @@ def report(db, chat, period, now=None, previous=False):
         (chat, begin, end),
     )
     lines = [
-        f"📊 <b>آمار {PERIODS[period]} {escape(db.chat(chat)['title'])}</b>",
-        f"{local_start:%Y-%m-%d %H:%M} تا {local_end:%Y-%m-%d %H:%M}",
-        f"منطقهٔ زمانی: {escape(conf['timezone'])}",
+        tr("m_e70a513f92ef", p0=PERIODS[period], p1=escape(db.chat(chat)["title"])),
+        tr("m_48750142f43a", p0=local_start, p1=local_end),
+        tr("m_9b175afb325c", p0=escape(conf["timezone"])),
     ]
     lines.extend(f"{title}: <b>{totals.get(key, 0):,}</b>" for key, title in METRICS.items())
     lines += [
-        f"کاربران فعال: {active:,}",
-        f"مشترک فعال اکنون: {subscribers:,}",
-        f"پرداخت‌های دوره: {revenue['n']} | دریافتی: {revenue['stars']} ⭐ | برگشت این پرداخت‌ها: {revenue['refunds']} ⭐",
+        tr("m_54d47ae9cc78", p0=active),
+        tr("m_318cb6b55283", p0=subscribers),
+        tr("m_3b82690f8c88", p0=revenue["n"], p1=revenue["stars"], p2=revenue["refunds"]),
     ]
     if busiest:
         peak = datetime.fromtimestamp(busiest[0]["hour"], ZoneInfo(conf["timezone"]))
-        lines.append(f"پرترافیک‌ترین دقیقه: {peak:%m-%d %H:%M} ({busiest[0]['n']} پیام)")
-    lines.append("\n🏆 فعال‌ترین اعضا")
+        lines.append(tr("m_6ab65396102b", p0=peak, p1=busiest[0]["n"]))
+    lines.append(tr("m_afe8b8b8f324"))
     lines.extend(f"{i}. {escape(r['name'])}: {r['n']:,}" for i, r in enumerate(top, 1))
     return "\n".join(lines), totals
 

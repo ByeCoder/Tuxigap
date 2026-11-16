@@ -167,6 +167,7 @@ async def maintenance(bot, stop):
         try:
             await bot.billing.pending_deliveries()
             await bot.engine.flush()
+            await bot.community.enforce_federations(now)
             await bot.growth.draw(now)
             await bot.billing.expire(bot.admin)
             await captcha_expiry(bot, now)

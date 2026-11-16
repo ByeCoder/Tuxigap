@@ -1,5 +1,7 @@
 """Stars-only access ledger. Never trust callback prices or pre-checkout as payment."""
 
+from .i18n import tr
+
 from datetime import datetime
 from html import escape
 import secrets
@@ -9,6 +11,7 @@ from zoneinfo import ZoneInfo
 import httpx
 
 from .telegram import APIError
+from .i18n import localize_user
 
 
 class PaymentNeedsReview(Exception):
@@ -41,19 +44,19 @@ def accept_payment(db, user, successful, paid_at=None):
         or successful.get("currency") != "XTR"
         or successful["total_amount"] != invoice["stars"]
     ):
-        raise ValueError("Payment does not match the server-side invoice")
+        raise ValueError(tr("m_653dc37babc9"))
     recurring = bool(invoice["recurring"])
     if recurring and (
         not successful.get("is_recurring")
         or not isinstance(successful.get("subscription_expiration_date"), int)
     ):
-        raise ValueError("Missing recurring subscription expiration")
+        raise ValueError(tr("m_3d865fc68ffe"))
     charge = successful["telegram_payment_charge_id"]
     with db.transaction():
         if db.one("SELECT charge FROM payments WHERE charge=?", (charge,)):
             return None
         if invoice["paid"] and not recurring:
-            raise ValueError("Fixed invoice was already paid")
+            raise ValueError(tr("m_58850bdb9f73"))
         db.execute(
             "INSERT INTO payments(charge,payload,user,chat,stars,days,paid_at,period_end) VALUES(?,?,?,?,?,?,?,?)",
             (
@@ -76,7 +79,7 @@ def mark_refunded(db, charge):
     with db.transaction():
         payment = db.one("SELECT * FROM payments WHERE charge=?", (charge,))
         if not payment:
-            raise ValueError("تراکنش پیدا نشد.")
+            raise ValueError(tr("m_1fcbd3898d58"))
         db.execute("UPDATE payments SET refunded=1 WHERE charge=?", (charge,))
         recompute(db, payment["chat"], payment["user"])
 
@@ -85,27 +88,28 @@ class Billing:
     def __init__(self, db, tg, config):
         self.db, self.tg, self.config = db, tg, config
 
+    @localize_user(0)
     async def invoice(self, user, plan_id):
         p = self.db.one("SELECT * FROM plans WHERE id=? AND enabled=1", (plan_id,))
         if not p or not self.db.chat(p["chat"])["settings"]["paid_gate"]:
-            raise ValueError("این طرح فعلاً قابل خرید نیست.")
+            raise ValueError(tr("m_620b3b05f8ce"))
         if not self.config.support_username or not self.config.terms_url:
-            raise ValueError("مدیر باید SUPPORT_USERNAME و TERMS_URL را پیش از فروش تنظیم کند.")
+            raise ValueError(tr("m_8158727da9f4"))
         chat_info = await self.tg.call("getChat", chat_id=p["chat"])
         if chat_info.get("username"):
-            raise ValueError("فروش دسترسی فقط برای گروه یا کانال خصوصی فعال است.")
+            raise ValueError(tr("m_6dff19fa3417"))
         bot_member = await self.tg.call("getChatMember", chat_id=p["chat"], user_id=self.db.get("bot_id"))
         if bot_member.get("status") != "administrator" or not all(
             bot_member.get(r) for r in ("can_invite_users", "can_restrict_members")
         ):
-            raise ValueError("ربات باید مجوز دعوت و محدودسازی عضو داشته باشد.")
+            raise ValueError(tr("m_56483a8f95f3"))
         # Prevent accidentally starting multiple concurrent recurring memberships.
         active = self.db.one(
             "SELECT * FROM subscriptions WHERE chat=? AND user=? AND expires>?",
             (p["chat"], user, int(time.time())),
         )
         if p["recurring"] and active:
-            raise ValueError("اشتراک فعال دارید؛ برای تغییر طرح با پشتیبانی تماس بگیرید.")
+            raise ValueError(tr("m_0499f2efeff3"))
         payload = secrets.token_urlsafe(20)
         self.db.execute(
             "INSERT INTO invoices(payload,user,chat,plan,stars,days,recurring,created) VALUES(?,?,?,?,?,?,?,?)",
@@ -113,7 +117,7 @@ class Billing:
         )
         params = dict(
             title=p["name"][:32],
-            description=f"دسترسی {p['days']} روزه به {self.db.chat(p['chat'])['title']}"[:255],
+            description=tr("m_f95db5b685b7", p0=p["days"], p1=self.db.chat(p["chat"])["title"])[:255],
             payload=payload,
             currency="XTR",
             prices=[{"label": p["name"][:32], "amount": p["stars"]}],
@@ -122,8 +126,8 @@ class Billing:
             url = await self.tg.call("createInvoiceLink", **params, subscription_period=2592000)
             await self.tg.send(
                 user,
-                "اشتراک هر ۳۰ روز به‌صورت خودکار تمدید می‌شود؛ لغو تمدید از «اشتراک‌های من».",
-                [[{"text": "پرداخت اشتراک دوره‌ای ⭐", "url": url}]],
+                tr("m_ebbed62901ed"),
+                [[{"text": tr("m_f963a4c9b120"), "url": url}]],
             )
         else:
             await self.tg.call("sendInvoice", chat_id=user, **params, start_parameter="shop")
@@ -150,29 +154,24 @@ class Billing:
             "answerPreCheckoutQuery",
             pre_checkout_query_id=query["id"],
             ok=ok,
-            **(
-                {}
-                if ok
-                else {"error_message": "صورت‌حساب معتبر نیست یا منقضی شده؛ از فروشگاه دوباره اقدام کنید."}
-            ),
+            **({} if ok else {"error_message": tr("m_a6b0c1d4fa6e")}),
         )
 
     def active(self, chat, user):
         sub = self.db.one("SELECT * FROM subscriptions WHERE chat=? AND user=?", (chat, user))
         return bool(sub and sub["expires"] > time.time())
 
+    @localize_user(1)
     async def access_link(self, chat, user):
         if not self.active(chat, user):
-            raise ValueError("اشتراک فعال ندارید.")
+            raise ValueError(tr("m_650c8fd7acd2"))
         sub = self.db.one("SELECT * FROM subscriptions WHERE chat=? AND user=?", (chat, user))
         if sub["expired_ban"] == 1:
             await self.tg.call("unbanChatMember", chat_id=chat, user_id=user, only_if_banned=True)
             self.db.execute("UPDATE subscriptions SET expired_ban=0 WHERE chat=? AND user=?", (chat, user))
         member = await self.tg.call("getChatMember", chat_id=chat, user_id=user)
         if member.get("status") == "kicked":
-            raise ValueError(
-                "مدیر شما را مسدود کرده است؛ پرداخت، مسدودی دستی را لغو نمی‌کند. با پشتیبانی تماس بگیرید."
-            )
+            raise ValueError(tr("m_b91ef569b096"))
         invite = await self.tg.call(
             "createChatInviteLink",
             chat_id=chat,
@@ -184,8 +183,8 @@ class Billing:
         end = datetime.fromtimestamp(sub["expires"], ZoneInfo(tz))
         await self.tg.send(
             user,
-            f"✅ دسترسی تا {end:%Y-%m-%d %H:%M} فعال است. لینک درخواست عضویت یک روز معتبر است؛ فقط خریدار تأیید می‌شود.",
-            [[{"text": "درخواست ورود", "url": invite["invite_link"]}]],
+            tr("m_2e8d22f539ce", p0=end),
+            [[{"text": tr("m_6362ab8e693f"), "url": invite["invite_link"]}]],
         )
 
     async def pending_deliveries(self):
@@ -201,7 +200,7 @@ class Billing:
                         try:
                             await self.tg.send(
                                 owner,
-                                f"⚠️ تحویل دسترسی پرداخت {escape(p['charge'])} نیاز به بررسی دارد؛ گروه {p['chat']}، کاربر {p['user']}.",
+                                tr("m_b7183a5bf8d7", p0=escape(p["charge"]), p1=p["chat"], p2=p["user"]),
                             )
                         except (APIError, httpx.HTTPError):
                             pass
@@ -255,7 +254,7 @@ class Billing:
     async def refund(self, charge):
         p = self.db.one("SELECT * FROM payments WHERE charge=?", (charge,))
         if not p:
-            raise ValueError("تراکنش پیدا نشد.")
+            raise ValueError(tr("m_1fcbd3898d58"))
         if not p["refunded"]:
             inv = self.db.one("SELECT * FROM invoices WHERE payload=?", (p["payload"],))
             if inv["recurring"] and not inv["cancelled"]:

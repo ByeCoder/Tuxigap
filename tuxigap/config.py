@@ -1,3 +1,4 @@
+from .i18n import tr, lazy
 from dataclasses import dataclass
 import os
 from pathlib import Path
@@ -18,8 +19,8 @@ DEFAULTS = {
     "bots": False,
     "captcha": False,
     "welcome": True,
-    "welcome_text": "سلام {name} 🌷 به گروه خوش آمدی!",
-    "rules": "قوانین هنوز تنظیم نشده‌اند.",
+    "welcome_text": lazy("m_12c590ec2bf6"),
+    "rules": lazy("m_6ac3014dde8b"),
     "warn_limit": 3,
     "mute_minutes": 10,
     "action": "warn",
@@ -37,6 +38,19 @@ DEFAULTS = {
     "paid_gate": False,
     "external_spam": True,
     "external_review": True,
+    "language": "en",
+    "locks": [],
+    "allowlist": [],
+    "anti_raid": True,
+    "raid_limit": 15,
+    "raid_window": 60,
+    "night_mode": False,
+    "night_start": 23,
+    "night_end": 7,
+    "links_limit": -1,
+    "mentions_limit": -1,
+    "ai_history": 0,
+    "ai_vision": False,
 }
 
 
@@ -57,6 +71,7 @@ class Config:
     terms_url: str = ""
     spam_engines: str = "{}"
     spam_engine_password: str = ""
+    studio_url: str = ""
 
     @classmethod
     def load(cls):
@@ -65,7 +80,7 @@ class Config:
         load_dotenv()
         token = os.environ.get("BOT_TOKEN", "").strip()
         if not token or ":" not in token:
-            raise ValueError("Set BOT_TOKEN in .env; never commit .env")
+            raise ValueError(tr("m_ccb17c3df134"))
         return cls(
             token=token,
             database=os.getenv("DATABASE", "data/tuxigap.sqlite3"),
@@ -82,6 +97,7 @@ class Config:
             terms_url=os.getenv("TERMS_URL", ""),
             spam_engines=os.getenv("SPAM_ENGINES", "{}"),
             spam_engine_password=os.getenv("SPAM_ENGINE_PASSWORD", ""),
+            studio_url=os.getenv("STUDIO_URL", ""),
         )
 
 

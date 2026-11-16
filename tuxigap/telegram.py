@@ -1,3 +1,4 @@
+from .i18n import tr
 import asyncio
 import httpx
 
@@ -11,6 +12,7 @@ class APIError(Exception):
 class Telegram:
     def __init__(self, token, base="https://api.telegram.org", client=None, test_mode=False):
         self.url = f"{base}/bot{token}/" + ("test/" if test_mode else "")
+        self.file_url = f"{base}/file/bot{token}/" + ("test/" if test_mode else "")
         self.client = client or httpx.AsyncClient(timeout=httpx.Timeout(40, connect=10))
 
     async def call(self, method, **data):
@@ -36,7 +38,7 @@ class Telegram:
 
     async def send(self, chat, text, keyboard=None, **extra):
         data = dict(
-            chat_id=chat, text=text[:4000], parse_mode="HTML", link_preview_options={"is_disabled": True}
+            chat_id=chat, text=str(text)[:4000], parse_mode="HTML", link_preview_options={"is_disabled": True}
         )
         if keyboard is not None:
             data["reply_markup"] = {"inline_keyboard": keyboard}
@@ -55,3 +57,23 @@ class Telegram:
 
     async def close(self):
         await self.client.aclose()
+
+    async def photo_bytes(self, file_id, limit=2 * 1024 * 1024):
+        info = await self.call("getFile", file_id=file_id)
+        path = info.get("file_path", "")
+        if (
+            not path
+            or path.startswith("/")
+            or ".." in path
+            or ":" in path
+            or info.get("file_size", 0) > limit
+        ):
+            raise ValueError(tr("m_53ac47e174d3"))
+        data = bytearray()
+        async with self.client.stream("GET", self.file_url + path) as response:
+            response.raise_for_status()
+            async for chunk in response.aiter_bytes():
+                data.extend(chunk)
+                if len(data) > limit:
+                    raise ValueError(tr("m_53ac47e174d3"))
+        return bytes(data)

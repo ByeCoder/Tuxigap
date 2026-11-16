@@ -1,32 +1,35 @@
 """Free community engagement. Game coins are never payment currency."""
 
+from .i18n import tr, lazy
+
 from html import escape
 import secrets
 import time
 
 from .ui import button
+from .i18n import localize_user, using_language
 
 TRUTHS = [
-    "آخرین چیزی که یاد گرفتی چه بود؟",
-    "اگر یک روز اینترنت قطع باشد چه می‌کنی؟",
-    "کدام کتاب یا فیلم را پیشنهاد می‌کنی؟",
-    "چه مهارتی را دوست داری یاد بگیری؟",
-    "یک خاطرهٔ خنده‌دار و مناسب جمع تعریف کن.",
-    "بهترین عادت کوچکت چیست؟",
+    lazy("m_420a59a4fd4d"),
+    lazy("m_670725c6ff44"),
+    lazy("m_ff9b97f2a79e"),
+    lazy("m_d5b17002c458"),
+    lazy("m_a76b1e1f81ef"),
+    lazy("m_0595872f8f9a"),
 ]
 DARES = [
-    "با سه ایموجی روزت را توصیف کن!",
-    "از یک عضو گروه بابت کمکش تشکر کن 🌷",
-    "یک جمله بدون حرف الف بنویس!",
-    "با کلمهٔ تاکسی یک شعر دوخطی بگو!",
-    "یک نکتهٔ مفید که بلدی به گروه یاد بده.",
-    "برای یک وسیلهٔ ساده یک اسم خلاقانه بساز!",
+    lazy("m_6fb3dc8702c8"),
+    lazy("m_9698d71d45c8"),
+    lazy("m_48c1fe3fc21d"),
+    lazy("m_d6872f9efb68"),
+    lazy("m_9f67794230d4"),
+    lazy("m_937c8141c04b"),
 ]
 FORTUNES = [
-    "امروز یک کار نیمه‌تمام کوچک را تمام کن 🌱",
-    "یک گفتگوی خوب ممکن است روزت را بهتر کند ☀️",
-    "یک استراحت کوتاه هم بخشی از پیشرفت است 🌷",
-    "کنجکاوی امروز می‌تواند مهارت فردا شود 📚",
+    lazy("m_442b3b432919"),
+    lazy("m_33eb50eb358f"),
+    lazy("m_f561a76cf71b"),
+    lazy("m_afe10553a837"),
 ]
 
 
@@ -34,12 +37,20 @@ class Growth:
     def __init__(self, bot):
         self.bot, self.db, self.tg = bot, bot.db, bot.tg
 
+    @localize_user(1)
     async def invite(self, chat, user):
         if self.db.chat(chat)["settings"]["paid_gate"]:
             return await self.tg.send(
                 user,
-                "برای گروه اشتراکی از لینک فروشگاه استفاده کنید:",
-                [[{"text": "فروشگاه گروه", "url": f"https://t.me/{self.bot.username}?start=buy_{chat}"}]],
+                tr("m_b11f5fe3b950"),
+                [
+                    [
+                        {
+                            "text": tr("m_ab123de686f9"),
+                            "url": f"https://t.me/{self.bot.username}?start=buy_{chat}",
+                        }
+                    ]
+                ],
             )
         existing = self.db.one("SELECT link FROM invite_links WHERE chat=? AND inviter=?", (chat, user))
         if existing:
@@ -50,8 +61,8 @@ class Growth:
             self.db.execute("INSERT INTO invite_links VALUES(?,?,?)", (chat, user, link))
         await self.tg.send(
             user,
-            "🔗 لینک معرفی تو؛ هر ورود معتبرِ تازه ۱۰ امتیاز و ۵ سکهٔ بازی دارد. خروج و ورود تکراری جایزه ندارد.",
-            [[{"text": "لینک دعوت من", "url": link}]],
+            tr("m_d612241d389c"),
+            [[{"text": tr("m_e759d1a6eaab"), "url": link}]],
         )
 
     def record_join(self, chat, user, invite, eligible=True):
@@ -76,7 +87,7 @@ class Growth:
 
     async def giveaway(self, chat, title, minutes, creator):
         if not 1 <= minutes <= 10080 or not 1 <= len(title) <= 200:
-            raise ValueError("عنوان تا ۲۰۰ نویسه و زمان ۱ تا ۱۰۰۸۰ دقیقه باشد.")
+            raise ValueError(tr("m_7ce92da2fe0a"))
         token = secrets.token_hex(5)
         self.db.execute(
             "INSERT INTO giveaways(token,chat,title,creator,ends) VALUES(?,?,?,?,?)",
@@ -84,23 +95,23 @@ class Growth:
         )
         await self.tg.send(
             chat,
-            f"🎉 <b>قرعه‌کشی رایگان</b>\n{escape(title)}\nزمان: {minutes} دقیقه\nورود رایگان؛ ۱۰۰ سکهٔ بازی برای برنده. تحویل جایزهٔ ذکرشده بر عهدهٔ مدیر است.",
-            [[button("🎟 شرکت می‌کنم", f"g:{token}")]],
+            tr("m_b5788b61747a", p0=escape(title), p1=minutes),
+            [[button(tr("m_fc00229636b1"), f"g:{token}")]],
         )
 
     async def enter(self, token, user):
         giveaway = self.db.one("SELECT * FROM giveaways WHERE token=? AND state='open'", (token,))
         if not giveaway or giveaway["ends"] <= time.time():
-            raise ValueError("این قرعه‌کشی تمام شده است.")
+            raise ValueError(tr("m_73f1359a3374"))
         await self.bot.require_member(giveaway["chat"], user)
         if not self.db.chat(giveaway["chat"])["settings"]["fun"]:
-            raise ValueError("تعامل این گروه غیرفعال است.")
+            raise ValueError(tr("m_eef779cc4f1c"))
         count = self.db.one("SELECT count(*) n FROM giveaway_entries WHERE token=?", (token,))["n"]
         exists = self.db.one("SELECT 1 FROM giveaway_entries WHERE token=? AND user=?", (token, user))
         if count >= 500 and not exists:
-            raise ValueError("ظرفیت ۵۰۰نفرهٔ این قرعه‌کشی پر شده است.")
+            raise ValueError(tr("m_262629f66c83"))
         new = self.db.execute("INSERT OR IGNORE INTO giveaway_entries VALUES(?,?)", (token, user)).rowcount
-        return "🎟 ثبت شد؛ موفق باشی!" if new else "قبلاً ثبت‌نام کرده‌ای؛ هر نفر یک شانس دارد."
+        return tr("m_370bac8e37ff") if new else tr("m_be05b86ae1ae")
 
     async def draw(self, now):
         for giveaway in self.db.all(
@@ -131,13 +142,10 @@ class Growth:
                     )
         for giveaway in self.db.all("SELECT * FROM giveaways WHERE state='drawn' AND notified=0 LIMIT 10"):
             winner = giveaway["winner"]
-            await self.tg.send(
-                giveaway["chat"],
-                f"🎉 نتیجهٔ قرعه‌کشی {escape(giveaway['title'])}\n"
-                + (
-                    f'برنده: <a href="tg://user?id={winner}">عضو خوش‌شانس</a> — ۱۰۰ سکهٔ بازی!'
-                    if winner
-                    else "شرکت‌کنندهٔ واجد شرایطی نبود."
-                ),
-            )
+            with using_language(self.db.chat(giveaway["chat"])["settings"].get("language", "en")):
+                await self.tg.send(
+                    giveaway["chat"],
+                    tr("m_e70e76a24d21", p0=escape(giveaway["title"]))
+                    + (tr("m_01d9d5d50542", p0=winner) if winner else tr("m_a76cc116c626")),
+                )
             self.db.execute("UPDATE giveaways SET notified=1 WHERE token=?", (giveaway["token"],))

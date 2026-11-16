@@ -1,31 +1,26 @@
-# گزارش بررسی نسخهٔ ۰٫۲٫۰
+# What we actually checked
 
-تاریخ: ۲۰۲۶-۱۱-۱۶. محیط: Python 3.12.14، HTTPX 0.28.1.
+Release: **0.3.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 
-| بررسی | نتیجه |
+| Check | Local result / boundary |
 |---|---|
-| unittest | ۶۱ آزمون مستقل موفق |
-| Ruff | بررسی خطا و قالب‌بندی موفق |
-| بستهٔ Python | wheel ساخته و در مسیر آزمایشی جدا نصب شد |
-| راه‌اندازی بدون شبکه | بررسی تنظیمات، ساخت SQLite و پشتیبان با توکن ساختگی موفق بود |
-| پنل وب | احراز هویت، محدودسازی تنظیمات، فایل‌های ثابت و آموزش روی سرور HTTP محلی آزموده شد |
-| موتور tg-spam | قرارداد احراز هویت و API، صف بازخورد و قطع سرویس با پاسخ ساختگی آزموده شد |
-| Docker | ساخت image در GitHub Actions موفق؛ اجرای زندهٔ سرویس با توکن واقعی انجام نشده است |
-| Telegram واقعی | انجام نشده؛ توکن و گروه تست در اختیار نبود |
-| Stars واقعی / محیط رسمی تست | انجام نشده؛ تست‌های محلی از پاسخ‌های ساختگی API استفاده می‌کنند |
-| AI واقعی | انجام نشده؛ قرارداد HTTP و اعتبارسنجی JSON با MockTransport آزموده شد |
-| بار و ممیزی امنیت مستقل | انجام نشده |
+| Unit and integration tests | 83 independent tests passed before publication; CI runs the current suite |
+| Ruff | Source, helper and test lint/format checks passed |
+| JavaScript | Syntax checks included in validation |
+| Native HTTP dashboard | Authentication, safe settings, training, static paths and period validation tested with a local server |
+| Languages | English default, catalog placeholders, concurrent context isolation, group/private permission checks and localized welcome tested |
+| Source ports | Entity offsets, scoped allowlists, lock families and bounded text output tested |
+| Community additions | Anti-raid, quiet hours, trusted members, federation ownership, stale jobs, manual-ban protection and paid-gate interaction tested |
+| AI additions | Context/public-note and image/quiz payload contracts tested with synthetic HTTP responses |
+| Database upgrade | Schema 1 → 2 retains existing data in a regression test |
+| Demo | Synthetic data population tested with network-client construction blocked |
+| Real Telegram / Stars / AI provider | Not performed here: no real token, account or provider key supplied |
+| Native Docker and browser | Current workflow builds the image and runs browser checks; see the recorded run below for outcomes |
+| Studio companion | Pinned upstream source and Compose configuration reviewed; no live Studio deployment tested here |
+| Independent security audit / load test | Not performed |
 
-آزمون‌ها شامل مجوز زندهٔ مدیر و عزل او، callback جعلی، حفاظت از مدیر، حالت آزمایشی،
-فلود، لینک مخفی در کپشن، نرمال‌سازی فارسی، جداسازی آموزش گروه‌ها، بازخورد سالم، حذف دادهٔ خام،
-مرز نیمه‌شب تهران و سال کبیسه، پاداش تکراری و کوییز، سهمیهٔ AI و پاسخ نامعتبر،
-هویت خریدار و مبلغ، charge تکراری، بازپرداخت و محاسبهٔ مجدد، لغو تمدید، تحویل ناموفق،
-درخواست عضویت، تمدید هم‌زمان با انقضا، مسدودی مدیر، صف مستقل پرداخت، گزارش تکراری،
-مدیریت عضو با دکمه و یادداشت/پاسخ خودکار هستند.
+The earlier 0.2 code passed Python 3.12/3.13 and native Docker build in [this recorded run](https://github.com/ByeCoder/Tuxigap/actions/runs/43824057509). That historical result isn't a substitute for the current workflow or live integration testing.
 
-قبولی این آزمون‌ها اثبات اتصال به سرویس زنده یا تضمین نبود خطا نیست. سناریوهای انتهابه‌انتها
-در [LIVE_TEST.md](LIVE_TEST.md) باید با ربات تست اجرا شوند. فایل CI نیز روی Python 3.12 و 3.13
-آزمون‌ها را اجرا می‌کند. هر سه کار `test (3.12)`، `test (3.13)` و `docker` در
-[اجرای تأییدشدهٔ GitHub Actions](https://github.com/ByeCoder/Tuxigap/actions/runs/43824057509) موفق بوده‌اند.
+A browser launch in the authoring workspace was blocked by its operating-system socket restrictions, so it isn't reported as a local visual pass. The browser smoke script is included for a normal runner and CI. Any screenshot it creates uses synthetic demo data only.
 
-آزمون‌های نسخهٔ ۰٫۲٫۰، معرفی عضو یکتا، جلوگیری از پاداش تکراری، قرعه‌کشی و عضویت معتبر، پنل مالک، موتور واقعی از نظر قرارداد HTTP و حفظ پرداخت تطبیق‌داده‌نشده در صف را هم پوشش می‌دهند.
+Please complete [LIVE_TEST.md](LIVE_TEST.md), especially membership payments and multi-group federation behavior, before using the toolkit with real communities.

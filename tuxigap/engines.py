@@ -3,6 +3,8 @@
 One endpoint per group preserves isolation. Telegram polling remains owned by Tuxigap.
 """
 
+from .i18n import tr
+
 import json
 import time
 
@@ -14,15 +16,15 @@ class SpamEngine:
         self.config, self.db, self.client = config, db, client
         raw = json.loads(config.spam_engines or "{}")
         if not isinstance(raw, dict):
-            raise ValueError("SPAM_ENGINES must map chat IDs to independent base URLs")
+            raise ValueError(tr("m_df862d7df4b7"))
         self.urls = {int(chat): str(url).rstrip("/") for chat, url in raw.items()}
         if len(set(self.urls.values())) != len(self.urls):
-            raise ValueError("Use a separate spam-engine endpoint for each group")
+            raise ValueError(tr("m_539538334c1b"))
         for url in self.urls.values():
             if not url.startswith(("http://", "https://")):
-                raise ValueError("Spam-engine URL must use HTTP(S)")
+                raise ValueError(tr("m_712673873b3e"))
         if self.urls and not config.spam_engine_password:
-            raise ValueError("Set SPAM_ENGINE_PASSWORD before configuring engines")
+            raise ValueError(tr("m_55bc9ecfe8fe"))
 
     async def request(self, chat, path, data):
         if chat not in self.urls:

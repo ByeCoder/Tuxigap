@@ -1,48 +1,65 @@
-# پرداخت و کنترل دسترسی
+# A clear, friendly membership flow
 
-## مسیر خرید
+Tuxigap sells digital group/channel access using **Telegram Stars (`XTR`)**. It does not implement bank transfers, cryptocurrency, currency conversion or tax accounting.
 
-طرح ذخیره‌شده در سرور ← پذیرش شرایط توسط خریدار ← صورت‌حساب XTR ← تأیید اولیهٔ قیمت/هویت
-← successful_payment ← ثبت اتمیک charge و دسترسی ← ارسال لینک درخواست عضویت ← بررسی هویت متقاضی.
+## Before your first real sale
 
-قیمت و مدت از callback گرفته نمی‌شوند. payload تصادفی به خریدار و عکس‌لحظه‌ای طرح متصل است.
-صورت‌حساب ثابت ۱۵ دقیقه برای شروع پرداخت معتبر است؛ تأیید قطعی معتبرِ دیررس همچنان ثبت می‌شود.
-charge شناسهٔ یکتا دارد؛ دریافت تکراری یک successful_payment به تمدید تکراری منجر نمی‌شود.
-تمدید ثابت به انتهای دسترسی موجود اضافه می‌شود. دوره‌ای از subscription_expiration_date تلگرام استفاده می‌کند.
+- Use a private group or channel and revoke uncontrolled invitation links.
+- Give the bot invite and restrict-member rights.
+- Add `SUPPORT_USERNAME` and a real `TERMS_URL` to `.env`.
+- Explain price, duration, renewal and refund policy in terms your members can read.
+- Run the official test-environment scenarios in [LIVE_TEST.md](LIVE_TEST.md).
 
-## انقضا و ورود
+## The purchase journey
 
-گروه یا کانال باید خصوصی باشد. ربات مجوز دعوت و محدودسازی لازم دارد. لینک‌های ساخته‌شده
-یک روز اعتبار و قابلیت درخواست عضویت دارند؛ دارندهٔ لینک بدون پرداخت تأیید نمی‌شود.
-لینک قدیمیِ ساخته‌شده توسط مدیر دیگر را ربات الزاماً نمی‌تواند لغو کند؛ خودتان لغو کنید.
-ورود مستقیم عضو غیرمشترک هم در chat_member کنترل می‌شود، مشروط به دریافت رویداد و مجوز ربات.
-کنترل زمان‌دار هر ۳۰ ثانیه بررسی می‌شود؛ اختلال شبکه می‌تواند اعمال انقضا را به تعویق بیندازد.
+1. A member chooses an available plan in private chat.
+2. They see the snapshot price/duration, any automatic renewal, and the sales terms.
+3. They agree, then the bot creates a Stars invoice.
+4. Pre-checkout validates the purchaser, currency, server-side price, plan state and invoice age. **This is not payment confirmation.**
+5. Telegram sends `successful_payment`.
+6. A SQLite transaction records the unique charge and calculates access.
+7. A persistent delivery queue sends a join-request link.
+8. The bot approves a join request only for an account with active access.
 
-لغو خودکار تمدید با `/subscriptions` دسترسی باقیمانده را نمی‌سوزاند. طرح ثابت تمدید خودکار ندارد.
-تغییر وضعیت فروش طرح، جای لغو اشتراک دوره‌ای قبلی را نمی‌گیرد. انقضا مدیر فعلی را اخراج نمی‌کند.
-این نسخه همگام‌سازی کامل رویداد لغو از سمت کاربر را ندارد؛ مدت خریداری‌شده همچنان با زمان قطعی کنترل می‌شود.
-اعضایی که قبل از فعال‌سازی دروازه عضو بوده‌اند و دفتر اشتراک ندارند، خودکار اخراج نمی‌شوند.
+A forwarded link doesn't grant access to someone else. A screenshot or claimed receipt doesn't grant access. A confirmed payment that cannot be reconciled stays in the inbox for human review; owners can receive a notification rather than silently losing the evidence.
 
-مسدودی شناخته‌شدهٔ مدیر با خرید رفع نمی‌شود؛ مسدودی ثبت‌شدهٔ انقضا/دروازه پس از خرید قابل رفع است.
-در صورت قطع فرایند میان پاسخ تلگرام و ثبت محلی یا تغییر هم‌زمان مدیر، نیاز به بررسی دستی ممکن است.
+## Plans and renewals
 
-## بازپرداخت و پشتیبانی
+| Plan | Supported duration | Renewal |
+|---|---|---|
+| Fixed | 1–365 days | Member purchases another term manually |
+| Recurring | 30 days | Telegram's supported 2592000-second recurring period |
 
-`/refund TELEGRAM_CHARGE_ID` را مدیر دارای مجوز محدودسازی در خصوصی ربات بفرستد.
-ربات قیمت و خریدار را نشان می‌دهد و دکمهٔ تأیید می‌خواهد. سپس refundStarPayment فراخوانی و دسترسی
-از پرداخت‌های بازپرداخت‌نشده دوباره محاسبه می‌شود. حذف دسترسی در دور بعدی بررسی انقضا انجام می‌شود.
-شناسهٔ charge در SQLite جدول payments است؛ آن را در issue عمومی منتشر نکنید.
-ربات هنگام بازپرداخت طرح دوره‌ای، ابتدا تمدید خودکار همان صورت‌حساب را لغو می‌کند؛
-خودِ متد refundStarPayment به‌تنهایی لغو قرارداد دوره‌ای نیست.
+Prices in this release are integers from 1 to 10000 Stars. A fixed purchase extends from the later of its payment time or the existing expiry. Recurring access follows Telegram's reported subscription expiration timestamp.
 
-خطای تحویل، پرداخت را برنمی‌گرداند یا دوباره شارژ نمی‌کند؛ تحویل در صف می‌ماند و OWNER_IDS هشدار می‌گیرند.
-کاربر با `/subscriptions` می‌تواند لینک را دوباره بگیرد. اگر ربات در خصوصی مسدود شده باشد، باید ابتدا unblock شود.
-اپراتور باید شرایط، روش تماس و سیاست بازپرداخت قابل دسترس داشته باشد. `/paysupport` راه تماس را نشان می‌دهد.
+Invoices bind a random payload to a purchaser and a stored plan snapshot. Fixed invoices are single-payment. Duplicate charge updates do not extend access twice. Initial pre-checkout expires after 15 minutes; a valid late confirmed payment is still reconciled.
 
-## قبل از فروش عمومی
+Members can cancel future renewal from `/subscriptions`; they keep the already-paid period. Turning off plan sales is **not** the same as cancelling an existing recurring subscription.
 
-- مسیر [LIVE_TEST.md](LIVE_TEST.md) را در محیط تست رسمی اجرا کنید.
-- قیمت Stars را با قیمت ریالی یکی فرض نکنید؛ این پروژه نرخ تبدیل یا برداشت موجودی را انجام نمی‌دهد.
-- نسخهٔ پشتیبان دفتر مالی و برنامهٔ تطبیق تراکنش‌ها را داشته باشید.
-- مدیرها می‌توانند با دعوت دستی، تغییر مجوز یا تبدیل گروه به عمومی، کنترل ربات را دور بزنند؛ تنظیمات مالک مهم است.
-- این نسخه تطبیق خودکار دفتر قدیمی با getStarTransactions و ثبت مالیات/حسابداری ندارد.
+## Access and expiry
+
+Join links last one day and create join requests. The identity of the requesting member is checked against current access. The bot also handles visible direct-join events while the gate is active.
+
+Tracked expired memberships are checked by maintenance, normally every 30 seconds. Network/service failures can delay enforcement. Current admins are exempt. Previously existing untracked members are not enumerated or automatically removed—the Bot API doesn't expose a full historical member list.
+
+The bot tracks bans it made for the access gate so a later purchase can restore that path. Known manual bans aren't lifted by a purchase. Federation reversals respect a tracked unpaid access gate. Concurrent native Telegram changes and a crash between a Telegram response and a database write can still require human review.
+
+## Refunds and help
+
+An authorized admin sends:
+
+```text
+/refund TELEGRAM_PAYMENT_CHARGE_ID
+```
+
+The bot shows the buyer and amount and asks for a confirmation button. For recurring plans it cancels that invoice's future renewal before refunding, then recalculates access from unrefunded ledger entries. Expired access is handled by maintenance.
+
+Charge IDs are in the private SQLite `payments` table. Don't paste real ones into public GitHub issues. `/paysupport` shares your configured contact; Telegram support doesn't fulfill your bot's sales for you.
+
+A failed access-link delivery doesn't create a new charge or discard the entitlement. Delivery retries, owners can be alerted, and a member can use `/subscriptions` after unblocking/starting the bot's private chat.
+
+## Ledger boundaries
+
+The native ledger is separate from Studio's commerce ledger. Restoring an old backup can omit newer payments; reconcile before accepting new purchases. Automatic reconstruction from `getStarTransactions`, a bookkeeping system and a guaranteed exactly-once boundary across Telegram/SQLite are not implemented.
+
+References: [Telegram digital payments](https://core.telegram.org/bots/payments-stars), [Bot API](https://core.telegram.org/bots/api), [Star subscriptions](https://core.telegram.org/api/subscriptions).

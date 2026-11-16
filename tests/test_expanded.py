@@ -158,7 +158,8 @@ class DashboardCase(unittest.TestCase):
     def test_static_asset_and_path_traversal(self):
         status, raw, headers = self.request("/", authenticated=False)
         self.assertEqual(status, 200)
-        self.assertIn("تاکسی گپ".encode(), raw)
+        self.assertIn(b'lang="en"', raw)
+        self.assertIn(b"Tuxigap", raw)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
         self.assertNotEqual(self.request("/../../.env", authenticated=False)[0], 200)
 

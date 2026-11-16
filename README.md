@@ -1,225 +1,319 @@
-# 🚕 تاکسی گپ | Tuxigap
+# 🚕 Tuxigap — your community, together
 
-[![checks](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml/badge.svg)](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml)
+[![Checks](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml/badge.svg)](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
-**توسعه و انتشار: [ByeCoder](https://github.com/ByeCoder) · مخزن: [ByeCoder/Tuxigap](https://github.com/ByeCoder/Tuxigap)**
+**A friendly Telegram community toolkit by [ByeCoder](https://github.com/ByeCoder).**
 
-ربات فارسی مدیریت جامعهٔ تلگرام با پنل دکمه‌ای، ضداسپم، آمار، بازی، هوش مصنوعی و فروش اشتراک.
+Meet **Tuxigap** (تاکسی گپ): moderation, community games, useful analytics, an AI helper, and paid memberships in one project. Start with the inline Telegram panel; add an owner dashboard, the real **tg-spam** engine, or the full **Telegram Bot Studio** companion when you're ready.
 
-**نسخهٔ ۰٫۲٫۰ — قابل اجرا و دارای تست خودکار؛ هنوز با توکن واقعی تلگرام یا پرداخت واقعی آزموده نشده است.**
-این پروژه، مدیریت، تعامل، آمار و فروش را در یک هسته جمع می‌کند و برای تشخیص پیشرفته امکان اتصال
-به **موتور واقعی tg-spam** دارد. قابلیت‌های منابع قبلی و موارد پیاده‌نشده در [FEATURES.md](docs/FEATURES.md)
-و [SOURCES.md](docs/SOURCES.md) مشخص شده‌اند؛ این نسخه ادعای پوشش تمام ماژول‌های تک‌تک منابع را ندارد.
+**English is the default** for the bot, dashboard, and documentation. Choose another interface language with `/language` or **Settings → Language**. Your own rules, notes and posts stay exactly as you wrote them.
 
-## امکانات موجود
+> **Release 0.3.0 · integration testing matters.** Automated tests cover local behavior and mocked service contracts. Please complete the [live test guide](docs/LIVE_TEST.md) before real moderation or paid sales. New groups start in dry-run mode so you can settle in safely.
 
-| بخش | امکانات پیاده‌شده |
-|---|---|
-| پنل اینلاین | دکمه‌های شیشه‌ای برای امنیت، آمار، محتوا، AI، یادگیری و اشتراک؛ مدیریت عضو با ریپلای و `/manage` |
-| پنل وب مالک | داشبورد فارسی، آمار چهار دوره، تغییر گزینه‌های امنیتی، آموزش نمونه و گزارش اقدام‌ها با کلید دسترسی مستقل |
-| مدیریت | حذف، اخطار، بن/رفع بن، سکوت زمان‌دار/رفع سکوت، سنجاق، قفل اضطراری و بازگردانی مجوزها |
-| امنیت | ضدفلود، تکرار پیام، واژه‌ها و عبارت‌های ممنوعهٔ فارسی، قفل لینک مخفی/عادی، فوروارد، رسانه و استیکر، کنترل ورود ربات، کپچای دکمه‌ای |
-| یادگیری | نمونه‌های سالم/اسپم از بازخورد مدیر؛ تطبیق متن و شباهت مجموعهٔ واژه‌ها؛ بازبینی پیش از اعمال خودکار |
-| هوش مصنوعی | گفتگوی `/ask`، بررسی متن با سرویس سازگار با Chat Completions، نمونه‌های مدیر در زمینهٔ تصمیم، سهمیهٔ روزانهٔ گروه و کاربر |
-| آمار | روز، هفته، ماه و سال؛ پیام و رسانه، اعضای فعال، ورود/خروج، اقدامات ربات، مصرف AI، بازی، واکنش، برترین‌ها و درآمد Stars |
-| گزارش | گزارش خودکار دورهٔ کامل‌شده، جلوگیری از ارسال تکراری، جبران آخرین دوره پس از خاموشی، خروجی CSV در خصوصی مدیر |
-| سرگرمی | کوییز رقابتی، سنگ‌کاغذقیچی، تاس، شوخی، امتیاز و سطح، سکهٔ بازی، نشان، رتبه‌بندی و پاداش روزانه با زنجیرهٔ حضور |
-| جذب و مشارکت | لینک معرفی شخصی، پاداش ورود یکتا، رتبه‌بندی معرف‌ها، قرعه‌کشی رایگان با بررسی عضویت و جایزهٔ سکهٔ بازی، حقیقت/جرئت و فال سرگرمی |
-| موتور تخصصی | اتصال HTTP احرازشده به tg-spam، ارسال بازخورد در صف ماندگار، جداسازی موتور هر گروه، پنل مستقل موتور و CAS اختیاری از طریق موتور |
-| تعامل | خوشامدگویی، قوانین، پاسخ خودکار به عبارت دقیق، یادداشت عمومی، گزارش اعضا، دکمهٔ پسندیدن و حالت عمومی `@bot` |
-| محتوا و کانال | اتصال کانال، یادداشت و پاسخ‌گو، پست زمان‌بندی‌شده و لغو صف، مقصد جداگانه برای گزارش مدیران |
-| فروش | طرح ثابت ۱ تا ۳۶۵ روز، تمدید دوره‌ای ۳۰روزه، Stars/XTR، بررسی خریدار و قیمت، دفتر تراکنش و جلوگیری از تمدید تکراری |
-| دسترسی پولی | لینک درخواست عضویت، کنترل خریدار، بازیابی لینک، تمدید، حذف دسترسی منقضی و بازپرداخت با تأیید مدیر |
-| نگهداری | SQLite/WAL، صف ماندگار آپدیت‌ها، صف مستقل پرداخت، Docker، بررسی سلامت، پشتیبان سازگار و GitHub Actions |
+## Find your way around
 
-## نصب با Docker
+[Try the demo](#take-a-test-drive) · [Quick start](#get-your-bot-running) · [All-in-one suite](#bring-the-whole-suite) · [Features](#what-you-can-do) · [Languages](#make-yourself-at-home) · [Commands](docs/COMMANDS.md) · [AI](docs/AI.md) · [Payments](docs/PAYMENTS.md) · [Source integration](docs/INTEGRATION.md) · [Operations](docs/OPERATIONS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md)
 
-۱. Python لازم نیست؛ Docker و Docker Compose لازم‌اند. از BotFather یک ربات بسازید.
+## Take a test drive
 
-۲. فایل تنظیمات را آماده کنید:
+You can explore the dashboard without a bot token, AI key, Telegram account, or payment:
 
 ```bash
-cp .env.example .env
+git clone https://github.com/ByeCoder/Tuxigap.git
+cd Tuxigap
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+python -m tuxigap.demo
 ```
 
-`BOT_TOKEN` را در `.env` وارد کنید؛ `OWNER_IDS` شناسهٔ عددی دریافت‌کنندگان هشدار تحویل پرداخت است.
-توکن و کلید AI را داخل کد ننویسید و فایل `.env` را منتشر نکنید.
+Open **http://127.0.0.1:8088**, paste the temporary owner key printed in your terminal, and have a look around. The demo includes a year of synthetic activity and a few friendly sample members. It makes **no Telegram, AI, or payment requests**. Everything is temporary; press `Ctrl+C` when you're done.
 
-۳. اجرا:
+On Windows, activate the environment with `.venv\Scripts\activate`.
+
+## Get your bot running
+
+### A comfortable first setup
+
+You'll need a Telegram bot from **[@BotFather](https://t.me/BotFather)** and either **Docker with Compose** or **Python 3.12+**.
+
+```bash
+git clone https://github.com/ByeCoder/Tuxigap.git
+cd Tuxigap
+python tools/configure.py
+```
+
+The setup helper asks for your bot token, optionally your numeric Telegram ID and group ID, and generates strong private dashboard/engine keys. It writes a private `.env` file and **doesn't overwrite an existing one**. No credentials are sent anywhere during setup.
+
+Prefer to edit settings yourself? Copy `.env.example` to `.env` and fill in `BOT_TOKEN`.
+
+### Docker: start with the core bot
 
 ```bash
 docker compose up -d --build
 docker compose logs -f --tail=100
 ```
 
-۴. ربات را ادمین گروه کنید و مجوز حذف پیام، محدودسازی اعضا، دعوت و سنجاق را بدهید.
-مدیر یک‌بار گفتگوی خصوصی ربات را با `/start` شروع کند؛ سپس در گروه `/panel` بفرستد.
-برای کانال، ربات را با مجوز انتشار و دعوت ادمین کنید و در خصوصی `/connect -100...` بفرستید.
-
-۵. ابتدا در حالت آزمایشی نتیجهٔ قوانین را ببینید؛ این حالت به‌صورت پیش‌فرض فعال است.
-در پنل امنیت، پس از تنظیم واژه‌ها و آستانه‌ها، آن را خاموش کنید تا اعمال خودکار واقعی شوند.
-دستور مستقیم مدیر مثل `/ban` و دروازهٔ اشتراک، مستقل از حالت آزمایشی‌اند.
-
-۶. برای حالت `@bot query`، در BotFather دستور `/setinline` را فعال کنید.
-این حالت عمومی فعلاً شوخی و دعوت به بازی را ارائه می‌دهد؛ آمار خصوصی مدیر را منتشر نمی‌کند.
-ربات برای دیدن پیام‌های عادی گروه باید ادمین باشد؛ اگر ادمین نیست، خاموش‌کردن Privacy Mode به‌تنهایی برای اجرای مدیریت کافی نیست.
-
-## نصب بدون Docker
+### Python: run directly
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-cp .env.example .env
-# ویرایش .env و قراردادن توکن
 python -m tuxigap --check
 python -m tuxigap
 ```
 
-Python 3.12 یا جدیدتر لازم است. در ویندوز محیط مجازی را با `.venv\Scripts\activate` فعال کنید.
-برای پراکسی، `ALL_PROXY` را در محیط یا `.env` تنظیم کنید؛ SOCKS پشتیبانی می‌شود.
-هر توکن و پایگاه داده باید فقط یک نمونهٔ در حال اجرا داشته باشند. ربات webhook فعال را خودکار حذف نمی‌کند.
+### Say hello to your community
 
-## استفادهٔ روزمره
+1. Start a private chat with your bot and send `/start`.
+2. Add it to a **supergroup** as an administrator.
+3. Grant **Delete messages**, **Ban/restrict users**, **Invite users**, and optionally **Pin messages**.
+4. Send `/panel` in your group. Explore the inline buttons and keep **Dry-run mode** on while checking your rules.
+5. Choose **Settings → Language**, or send `/language en`, `/language fa`, `/language zh`, and so on.
+6. Configure blocked words and flood limits. When the results look right, turn dry run off for automatic enforcement.
 
-| کار | روش |
-|---|---|
-| همهٔ تنظیمات | `/panel` و دکمه‌ها؛ تنظیم متن‌ها در خصوصی مدیر انجام می‌شود |
-| مدیریت دکمه‌ای عضو | روی پیام عضو ریپلای کنید و `/manage` بفرستید |
-| اخطار و محدودسازی | ریپلای و `/warn`، `/mute 10`، `/unmute`، `/ban`، `/unban` |
-| حذف و سنجاق | ریپلای و `/delete`، `/pin` |
-| آموزش مدیر | ریپلای و `/spam` یا `/ham`؛ این دو دستور فقط نمونهٔ آموزشی ذخیره می‌کنند |
-| گزارش پیام | عضو روی پیام ریپلای و `/report`؛ مدیر بازخورد می‌دهد |
-| تنظیم فحاشی | امنیت ← واژه‌ها؛ هر عبارت یک خط؛ `*` برای تطبیق بخشی از کلمه |
-| نمونهٔ منع | `واژه` کل واژه را می‌گیرد؛ `*واژه` درون واژه‌های بزرگ‌تر هم تطبیق دارد |
-| پاسخ خودکار | محتوا ← پاسخ خودکار ← `سلام | سلام، خوش آمدی!` |
-| یادداشت | محتوا ← یادداشت ← `راهنما | متن راهنما`؛ اعضا `/get راهنما` |
-| حذف پاسخ/یادداشت | همان نام یا عبارت و `| -` |
-| پست آینده | محتوا ← زمان‌بندی ← `2027-01-15 18:30 | متن پیام` با زمان محلی گروه |
-| آمار | دکمه‌های چهار دوره یا `/stats day`، `week`، `month`، `year` |
-| بازی و امتیاز | `/play`، `/quiz`، `/daily`، `/top`، `/profile` |
-| کمک AI | فعال‌سازی در پنل و `/ask سؤال` در گروه |
+For a channel, make the bot an admin and send `/connect -100…` in its private chat. Grant **Post messages** for scheduled posts and **Invite/restrict users** for paid access.
 
-دکمه‌ها با جعل `callback_data` قابل دورزدن نیستند: ربات مجوز فعلی مدیر را از تلگرام می‌پرسد.
-گروه‌ها، نمونه‌های آموزشی، تنظیمات و اشتراک‌ها با شناسهٔ مستقل از هم جدا می‌شوند.
+For `@YourBot query` inline mode, enable `/setinline` in BotFather. This public mode shares a joke or an invitation to play; it doesn't expose private analytics.
 
-## آمار و نگهداری داده
+**One polling process owns each bot token.** Tuxigap won't silently remove an existing webhook, and the same token must not also run in Studio or a legacy bot.
 
-دوره‌ها **تقویمی میلادی** هستند، با منطقهٔ زمانی پیش‌فرض `Asia/Tehran` و شروع هفته از شنبه.
-منطقه، ساعت گزارش و شروع هفته از پنل قابل تغییرند. تاریخ شمسی در این نسخه پیاده نشده است.
-گزارش دستی دورهٔ جاری تا اکنون را نشان می‌دهد؛ گزارش خودکار، آخرین دورهٔ کامل‌شده را.
-هنگام روشن‌کردن گزارش، یک گزارش از هر چهار دورهٔ کامل‌شده ارسال می‌شود؛ دورهٔ بدون داده صفر است.
-ورود و خروج از `chat_member` جمع‌آوری می‌شود؛ نمودار سالانه با داده‌های آتی پر می‌شود، نه با تاریخچهٔ فرضی.
-CSV فعلاً شمارنده‌های دقیقه‌ای UTC را صادر می‌کند؛ آمار متنی کاربران فعال و رتبه‌بندی را هم دارد.
+## Bring the whole suite
 
-متن‌های عادی و شواهد مدیریت پس از `RETENTION_DAYS` پاک می‌شوند. نمونه‌های آموزش حداکثر ۵۰۰ مورد
-برای هر گروه و حداکثر ۹۰ روز می‌مانند. شمارنده‌ها، شناسه‌های فعالیت و دفتر پرداخت ماندگارند.
-صف پرداخت تحویل‌نشده برای رسیدگی مالی حفظ می‌شود. `/privacy` و `/forget` در دسترس کاربر است؛
-حذف پروفایل، مجوز خریداری‌شده یا دفتر مالی را حذف نمی‌کند. پشتیبان‌ها را نیز با سیاست نگهداری خودتان مدیریت کنید.
+The repository includes optional Compose files so you can use the larger toolkit from one checkout:
 
-## تنظیم AI و یادگیری
+| Component | What it adds | Local address | Storage |
+|---|---|---|---|
+| Tuxigap core | Inline moderation, games, AI, analytics, paid access | Telegram | `tuxigap-data` |
+| Owner dashboard | Analytics, safe settings, training and audit activity | `127.0.0.1:8080` | Same Tuxigap database |
+| Real tg-spam engine | Specialized detection, sample management, CAS/Lua through engine configuration | `127.0.0.1:8081` | Separate `spam-data` |
+| Full Studio companion | Upstream CRM, support desk, flow builder, Mini Apps, commerce and automation | `127.0.0.1:3000` | Separate `studio-data` |
 
-`AI_API_KEY`، `AI_MODEL` و در صورت نیاز `AI_BASE_URL` را تنظیم کنید. نام مدل را از سرویس‌دهندهٔ خود بگیرید.
-مدل باید `POST /chat/completions`، `max_completion_tokens` و برای طبقه‌بندی JSON Object را پشتیبانی کند.
-AI به‌صورت پیش‌فرض خاموش است و به‌ازای هر گروه از پنل فعال می‌شود؛ هزینهٔ API متعلق به حساب شماست.
-`AI_DAILY_LIMIT` سقف درخواست گروه و `AI_USER_DAILY_LIMIT` سقف کاربر در آن گروه است؛ این‌ها سقف هزینهٔ پولی نیستند.
-سهمیه بر اساس روز UTC است. خرابی AI قوانین محلی را متوقف نمی‌کند.
-
-یادگیری این نسخه **fine-tuning مدل نیست**: از برچسب مدیر، تطبیق نمونه و شباهت واژه‌ها استفاده می‌شود؛
-چند نمونهٔ اخیر هم به طبقه‌بندی AI داده می‌شوند. نتیجهٔ AI فقط برای بازبینی مدیر است، حتی اگر احتمال بالا باشد.
-اعمال خودکار الگوهای آموخته‌شده دکمهٔ جداگانه دارد. قوانین صریح مثل واژهٔ ممنوعه با برچسب سالم دور زده نمی‌شوند.
-ربات حذف‌های دستیِ خارج از خودش را نمی‌بیند و از نیت پنهان مدیر خبر ندارد؛ بازخوردهای ثبت‌شده منبع آموزش‌اند.
-عکس، صدا و ویدئو به AI ارسال و تحلیل نمی‌شوند؛ در این نسخه تحلیل AI متنی است.
-
-## فروش اشتراک
-
-راهنمای کامل در [PAYMENTS.md](docs/PAYMENTS.md) است. خلاصه:
-
-۱. گروه/کانال را **خصوصی** کنید. لینک‌های دعوت قدیمی و راه‌های ورود بدون کنترل را لغو کنید.
-۲. `SUPPORT_USERNAME` و `TERMS_URL` را در `.env` تنظیم کنید؛ شرایط، مدت و سیاست بازپرداخت واقعی خود را منتشر کنید.
-۳. از پنل اشتراک، طرح بسازید: `ماهانه | 100 | 30 | 0`؛ عدد آخر ۱ برای تمدید خودکار ۳۰روزه است.
-۴. دروازهٔ اشتراک را با دکمهٔ تأیید فعال کنید؛ لینک فروشگاه را از «فهرست طرح‌ها» بگیرید.
-۵. کاربر در خصوصی طرح را می‌بیند، شرایط را می‌پذیرد و صورت‌حساب Stars دریافت می‌کند.
-۶. دسترسی فقط پس از `successful_payment` ثبت می‌شود، نه با عکس رسید یا تأیید اولیهٔ پرداخت.
-۷. لینک ورود درخواست عضویت می‌سازد؛ ربات بر اساس **هویت متقاضی و اشتراک فعال** تأیید می‌کند.
-
-فروش دیجیتال داخل تلگرام با Stars انجام می‌شود؛ درگاه ریالی، کارت‌به‌کارت و رمزارز در این نسخه وجود ندارد.
-تمدید دوره‌ای Bot API فقط ۳۰روزه است؛ طرح‌های ثابت تا ۳۶۵ روز دارند. سکهٔ بازی از Stars کاملاً جداست.
-اعضای قدیمیِ فاقد سابقهٔ اشتراک خودکار اخراج نمی‌شوند. مدیران فعلی از اخراج بر اثر انقضا معاف‌اند.
-غیرفعال‌کردن یک طرح فروش، تمدیدهای دوره‌ای قبلاً شروع‌شده را لغو نمی‌کند؛ لغو از `/subscriptions` انجام می‌شود.
-
-## پشتیبان و ارتقا
+After `python tools/configure.py`, you can run:
 
 ```bash
-python -m tuxigap --backup backups/tuxigap-2026-11-16.sqlite3
-# در Docker؛ فایل داخل volume قرار می‌گیرد:
-docker compose exec tuxigap python -m tuxigap --backup /app/data/backup-2026-11-16.sqlite3
+python tools/manage.py up --all
+python tools/manage.py status --all
+python tools/manage.py logs --all
 ```
 
-برای بازیابی، سرویس را متوقف کرده و پشتیبان را جایگزین پایگاه داده کنید. فایل‌های WAL/SHM باقی‌ماندهٔ
-نسخهٔ قبلی نباید کنار فایل بازیابی‌شده بمانند. هرگز پایگاه دادهٔ فعال را با `cp` ساده پشتیبان نگیرید.
-فایل‌های داخل volume در GitHub منتشر نشوند. بازیابی پشتیبان قدیمی ممکن است پرداخت‌های جدیدتر را از دفتر محلی حذف کند؛
-پیش از پذیرش خرید دوباره، تراکنش‌های Stars را تطبیق دهید.
+Or use Compose directly:
 
-## آزمون و انتشار در GitHub
+```bash
+docker compose \
+  -f docker-compose.yml \
+  -f docker-compose.web.yml \
+  -f docker-compose.engines.yml \
+  -f docker-compose.studio.yml \
+  up -d --build
+```
+
+**A small but important distinction:** Studio is the **full upstream application**, pinned to a source commit and deployed as a companion. Its CRM and Mini App features are not disguised as native Tuxigap commands. Add a **different BotFather token** in Studio, and keep duplicate moderation modules off when both bots share a group. Its login, database, languages and billing features remain separate.
+
+For tg-spam, set a group-to-engine mapping in `.env`:
+
+```dotenv
+SPAM_ENGINES={"-1001234567890":"http://spam-engine:8080"}
+SPAM_ENGINE_PASSWORD=YOUR_STRONG_RANDOM_PASSWORD
+```
+
+Give each group its **own engine endpoint and volume**. The adapter rejects duplicate endpoint mappings so training data isn't accidentally shared. The engine gets **no Telegram token**; Tuxigap remains in charge of Telegram actions. Engine decisions start in human-review mode.
+
+See [advanced setup](docs/ADVANCED.md) for individual components, access keys, HTTPS, and the optional Studio companion.
+
+## What you can do
+
+| Area | Available features |
+|---|---|
+| **Inline administration** | Settings, member action buttons, bans/unbans, timed mutes/unmutes, warnings, warning reset, delete, pin, emergency lockdown and permission restore |
+| **Content protection** | Flood and duplicate checks, Persian/Arabic text normalization, blocked words/phrases, hidden links, forwards, media, stickers and bots |
+| **Advanced locks** | 40+ ported Studio lock types: contact, phone, email, polls, albums, custom emoji, animated/premium stickers, inline bots, forward types, scripts and more |
+| **Scoped allowlists** | Exact domains/subdomains, sticker packs, commands, inline bots and forwarding sources; allowing a domain doesn't allow unrelated media |
+| **Community safety** | Join-raid detection, welcome CAPTCHA, configurable quiet hours and trusted-member exemptions |
+| **Federations** | Owner-approved group membership, shared bans, persistent fan-out jobs, live admin protection and stale-job handling |
+| **Human-guided learning** | `/spam`, `/ham`, review buttons, group-specific samples, similarity matching and queued feedback to the real spam engine |
+| **AI helper** | `/ask`, optional recent-message context, public-note retrieval, conversation summaries, admin-generated quizzes and opt-in image review |
+| **Analytics** | Daily/weekly/monthly/yearly calendar reports, active members, join/leave events, moderation counters, games, referrals, AI/engine usage and Stars totals |
+| **Reporting** | Automatic completed-period reports, latest-period catch-up, durable deduplication and private CSV exports |
+| **Games & fun** | Competitive quizzes, rock-paper-scissors, dice, coin toss, 8-ball, decisions, emoticons, bounded text-art, jokes, truth/dare and playful fortunes |
+| **Keep people involved** | XP, levels, game coins, badges, streak-based daily rewards, personal referral links, referral rankings and free giveaways |
+| **Helpful chat tools** | Welcome messages, group rules, public notes, exact-phrase auto-replies, member reports and AFK notices |
+| **Channel content** | Channel connection, future posts, scheduled-post cancellation and private access plans |
+| **Paid memberships** | Stars invoices, fixed terms, 30-day recurring terms, purchaser/price checks, access recovery, expiry, cancellation, support and refunds |
+| **Reliability** | SQLite/WAL, additive schema migration, persistent update inbox, a separate payment lane, retry queues, backup and health checks |
+| **Operations** | Non-root Docker image, loopback-only dashboards, setup helper, suite launcher, offline demo and CI |
+
+See the [feature matrix](docs/FEATURES.md) and [source integration notes](docs/INTEGRATION.md) for exact boundaries. We aim for useful, working integration—not a promise that every historical module in every upstream repository works unchanged.
+
+## Make yourself at home
+
+English is the reference and default. These language choices are available:
+
+| Code | Language | Code | Language | Code | Language |
+|---|---|---|---|---|---|
+| `en` | English | `fa` | فارسی / Persian | `zh` | 中文 / Chinese |
+| `ru` | Русский / Russian | `he` | עברית / Hebrew | `es` | Español / Spanish |
+| `fr` | Français / French | `ar` | العربية / Arabic | `de` | Deutsch / German |
+| `tr` | Türkçe / Turkish | `pt` | Português / Portuguese | `hi` | हिन्दी / Hindi |
+| `ja` | 日本語 / Japanese | `ko` | 한국어 / Korean | `it` | Italiano / Italian |
+
+- `/language` in private chat changes **your personal interface**.
+- `/language CODE` in a group changes **that group's interface** and requires a current admin.
+- The owner dashboard has its own interface selector and a separate group-language setting.
+- Persian, Arabic and Hebrew use RTL in the dashboard.
+- AI answers and generated quizzes use the group's selected language.
+- Languages share the same features. **Translation coverage varies**: core menus are localized, while missing advanced messages use the friendly English reference. Nothing depends on a live translation service.
+- Admin-authored rules, posts, notes and historical audit content are not automatically translated.
+
+Want to help improve a translation? [Here's the short guide](docs/LANGUAGES.md). The check script verifies interpolation placeholders so names, prices and dates stay safe.
+
+## A few everyday examples
+
+### Teach a community rule
+
+Open **Moderation & safety → Edit blocked words**. Put one word or phrase on each line. Matching uses whole words by default; prefix `*` to match inside longer words too.
+
+Reply to a message with `/spam` or `/ham` to provide a labeled example. These commands **teach**; they don't silently delete the original message. Use `/delete` for an explicit removal.
+
+### Manage a member with buttons
+
+Reply to the member's message and send `/manage`. You'll get warning, mute, unmute, delete, ban and training buttons. Permissions are checked again when a button is used; admins and the bot are protected.
+
+### Add a useful note or reply
+
+From **Content & scheduling**:
+
+```text
+Public note:
+welcome | Please be kind, stay curious, and help each other learn.
+
+Auto-reply:
+meeting time | Our next community catch-up is Tuesday at 18:00 UTC.
+
+Scheduled post:
+2027-01-15 18:30 | Hello, everyone! It's time for our weekly catch-up.
+
+Poll:
+What shall we explore next? | Gardening | Robotics | Data science
+
+Free giveaway:
+Community star badge | 60
+```
+
+Use `Name | -` to remove a note or auto-reply. Your timezone setting controls scheduled local times.
+
+### Build a federation
+
+```text
+Private chat: /fedcreate Our Friendly Communities
+Group owner: /fedjoin FEDERATION_ID
+Federation owner: approve the request button
+Federation owner in a linked group: /fban MEMBER_ID Reason
+Undo a federation decision: /funban MEMBER_ID Reason
+Group owner: /fedleave
+```
+
+Unbanning doesn't knowingly override a manual ban or an expired paid-membership gate. See [federations](docs/COMMANDS.md#federations) for the trust model.
+
+## Add your AI helper
+
+Set `AI_API_KEY`, `AI_MODEL`, and, if needed, `AI_BASE_URL` in `.env`. Your provider needs an OpenAI-compatible Chat Completions endpoint and JSON-object responses for moderation/quizzes. Pick a model your provider actually offers.
+
+Then open **AI & learning**:
+
+- Enable chat help for `/ask`.
+- Set context history to `0–20`; **zero is the default**.
+- Use public notes as a small community knowledge base.
+- Enable image review only if your model supports vision and your community is comfortable with images going to that provider.
+- `/aiquiz TOPIC` is for current admins. `/summary` needs context enabled.
+
+AI text/image flags go to **human review**. Local flood, word and content rules keep working if a provider is unavailable. Quotas count requests, **not a guaranteed currency budget**. Learn more in [AI & learning](docs/AI.md).
+
+## Offer paid access
+
+1. Make your group or channel **private** and revoke old uncontrolled invite links.
+2. Set `SUPPORT_USERNAME` and `TERMS_URL` in `.env`.
+3. Create a plan from **Membership sales**:
+
+   ```text
+   Monthly | 100 | 30 | 0
+   ```
+
+   The last number is `1` for automatic 30-day renewal or `0` for a fixed term.
+
+4. Review the terms, then enable the membership gate with its confirmation button.
+5. Share the shop link shown in **View plans**.
+
+Access is recorded only after Telegram's **successful payment** update. The bot verifies the buyer and price, deduplicates charge IDs, and sends a join-request link. Forwarding that link doesn't give another account access.
+
+Members can use `/subscriptions` to recover links or cancel renewal. An authorized admin can request `/refund CHARGE_ID` and confirm it. Refunding a recurring plan also cancels its future renewal.
+
+**Game coins are just for fun.** They cannot be bought for cash, withdrawn, or converted into Stars. Giveaways have free entry, and admins fulfill any prize they describe.
+
+Please read [payments and access](docs/PAYMENTS.md) and finish the [live payment tests](docs/LIVE_TEST.md) before selling to real members.
+
+## Understand your reports
+
+Reports use **Gregorian calendar periods** and the group's timezone, initially `Asia/Tehran`. Weeks start on Saturday unless you change the setting. Reports begin from events the bot actually receives; we don't invent historical analytics.
+
+Manual reports show the current period. Automatic reports show the latest completed day, week, month and year, with durable deduplication. On first enablement, each completed period can be sent once; periods without data show zero.
+
+Minute buckets preserve half-hour timezone boundaries. CSV exports contain UTC metric buckets; text reports also show active-member totals, rankings and Stars figures. Historical member identity rows affect active-member analytics; `/forget` can remove those personal rows while aggregate counters remain.
+
+## Keep your community running
+
+```bash
+# Check settings/database without Telegram or AI requests
+python -m tuxigap --check
+
+# Consistent backup while SQLite is running
+python -m tuxigap --backup backups/tuxigap-2026-11-16.sqlite3
+
+# Docker backup inside the persistent volume
+docker compose exec tuxigap python -m tuxigap --backup /app/data/backup.sqlite3
+
+# Stop the core bot, keeping persistent data
+docker compose down
+```
+
+Don't copy a live SQLite file with plain `cp`; use the backup command. Keep backups private. Before upgrading from 0.2, make a backup; schema version 1 upgrades additively to version 2. Never run an older release against a newer schema.
+
+[Operations](docs/OPERATIONS.md) covers restores, queues, storage, secrets, logging, health, proxies, and deployment boundaries.
+
+## Develop with us
 
 ```bash
 pip install -e '.[dev]'
-ruff check tuxigap tests
-ruff format --check tuxigap tests
+ruff check tuxigap tools tests
+ruff format --check tuxigap tools tests
 python -m unittest discover -s tests -v
+python tools/check_translations.py
 ```
 
-تست‌ها از Telegram و AI ساختگی استفاده می‌کنند و پرداخت واقعی انجام نمی‌دهند.
-پیش از فروش عمومی، مسیر انتهابه‌انتها را طبق [LIVE_TEST.md](docs/LIVE_TEST.md) در محیط تست تلگرام اجرا کنید.
+The tests use fake Telegram/AI responses and local HTTP servers. They do not move real Stars or moderate real communities. CI checks Python 3.12/3.13 and builds the Docker image. [Validation](docs/VALIDATION.md) records what was actually run.
 
-برای دریافت و توسعه از مخزن مرجع:
+Please keep `.env`, database files, backups, real user data and payment IDs out of commits. You'll find friendly contribution and security notes in [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
-```bash
-git clone https://github.com/ByeCoder/Tuxigap.git
-cd Tuxigap
-git switch -c feature/my-change
-# ویرایش، اجرای آزمون‌ها و بررسی فایل‌ها
-git add .
-git diff --cached --name-only
-git commit -m "Improve Tuxigap"
-git push -u origin feature/my-change
-```
+## A clear view of the boundaries
 
-`.env`، داده‌ها و پشتیبان‌ها نباید داخل commit باشند. تغییرها را با Pull Request بررسی کنید.
+- The native bot is one polling process with SQLite, intended for independently hosted communities. Large-scale load testing is still needed.
+- Telegram doesn't expose a complete historical member list or full old message history through the Bot API. Other bots' messages are generally unavailable.
+- Existing untracked members aren't automatically purged when paid access is enabled.
+- A webhook, another poller, missing admin permission, or a removed bot can stop delivery/enforcement.
+- SQLite commits and Telegram actions aren't one atomic transaction. A crash at the wrong moment may duplicate a notice or scheduled post; confirmed payment charges are deduplicated.
+- Learning means labeled examples and similarity/context, **not autonomous fine-tuning** or reading every manual deletion.
+- Image review is optional AI assistance, not a guarantee to catch every image or every form of abuse.
+- Automatic migration from a basic group ID to a new supergroup ID is not implemented. Start with a supergroup.
+- The native core doesn't include every legacy anime/download/weather module or a voice-chat music player. Studio's broader features are available through the separate companion, with its own setup and language coverage.
+- Translation coverage and service integration status are documented openly; please help us polish them rather than assuming an unchecked feature is production-ready.
 
-## محدودیت‌های عملی
+## Credits and license
 
-این نسخه یک فرایند polling با SQLite است؛ برای نصب مستقل و گروه‌های کوچک و متوسط طراحی شده، نه کلاستر بزرگ.
-سنجش بار انجام نشده است. فراخوانی زندهٔ بررسی مجوز، برای هر پیام عضو هزینهٔ شبکه دارد.
-Bot API تاریخچهٔ قدیمی و فهرست کامل اعضای گروه را در اختیار ربات نمی‌گذارد؛ پیام‌های ربات‌های دیگر هم عموماً به ربات نمی‌رسند.
-آمار فقط رویدادهای دریافتی پس از نصب را پوشش می‌دهد؛ حذف یا ویرایش خارج از ربات تمام شمارنده‌های تاریخی را اصلاح نمی‌کند.
-تغییر شناسهٔ یک گروه عادی به سوپرگروه به‌صورت خودکار مهاجرت نمی‌کند؛ نصب را از ابتدا در سوپرگروه انجام دهید.
-کپچا ساده است و تضمین شناسایی انسان نیست؛ فحاشی تصویری/صوتی و همهٔ ترفندهای نوشتاری پوشش داده نمی‌شوند.
-ارسال پیام و اقدام تلگرام با تراکنش SQLite اتمیک نیست؛ قطع فرایند در لحظهٔ نامطمئن می‌تواند اعلان/پست را تکرار کند.
-شناسهٔ پرداخت از دوباره‌اعمال‌شدن دسترسی جلوگیری می‌کند؛ این به معنی تضمین exactly-once برای همهٔ متدهای تلگرام نیست.
-موسیقی در وویس‌چت، CRM فروش، سازندهٔ Mini App، تقویم شمسی و تشخیص تصویری در این نسخه وجود ندارند.
+Tuxigap is developed by **ByeCoder**. This release includes credited adaptations from **Zero Two**, **AstrakoBot**, and **tg-bot-studio**, plus an optional real **tg-spam** service. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), the pinned [upstream manifest](third_party/upstream-lock.json), and each preserved license.
 
-## پنل وب و موتور پیشرفته
+**Version 0.3.0 is distributed under GPL-3.0-only** because it now includes GPL-covered adaptations. Earlier original Tuxigap code was published under MIT; its notice is preserved in `third_party/tuxigap-v0.2/LICENSE`. Please preserve upstream attribution and license notices when sharing your version.
 
-راهنمای راه‌اندازی در [ADVANCED.md](docs/ADVANCED.md) است. پنل وب اختیاری است؛ مدیریت اصلی همچنان با
-دکمه‌های شیشه‌ای تلگرام کار می‌کند. کلید `WEB_TOKEN` دسترسی مالک به تمام گروه‌های همین نصب را می‌دهد.
-برای موتور واقعی tg-spam، نگاشت `SPAM_ENGINES` و رمز موتور را تنظیم کنید؛ هر گروه به یک موتور مستقل متصل شود.
-فقط تاکسی گپ توکن تلگرام دارد؛ موتور جانبی بدون توکن تلگرام اجرا می‌شود و با polling تداخل ندارد.
-
-## معرفی دوستان و قرعه‌کشی
-
-از `/play`، «دعوت دوستان» را بزنید؛ لینک به خصوصی شما می‌آید. معرف برای اولین ورود ثبت‌شدهٔ هر عضو
-۱۰ امتیاز و ۵ سکهٔ بازی می‌گیرد. خروج/ورود تکراری جایزه ندارد و ورود ربات پاداش نمی‌گیرد.
-در گروه دارای کپچا، معرفی پس از حل کپچا ثبت می‌شود. تشخیص قطعی حساب جعلی یا عضویت قبل از نصب ممکن نیست.
-در گروه پولی لینک فروشگاه داده می‌شود تا کنترل پرداخت دور زده نشود.
-
-مدیر از محتوا ← قرعه‌کشی، `عنوان جایزه | زمان به دقیقه` را ثبت می‌کند. شرکت رایگان است و هر نفر یک شانس دارد؛
-سقف فعلی هر قرعه‌کشی ۵۰۰ نفر است. برنده هنگام قرعه‌کشی باید عضو باشد و ۱۰۰ سکهٔ بازی می‌گیرد.
-تحویل جایزهٔ توضیحی بر عهدهٔ مدیر است؛ سکهٔ بازی قابل برداشت، خرید با پول یا تبدیل به Stars نیست.
-برای نظرسنجی، از محتوا ← نظرسنجی و قالب `سؤال | گزینه۱ | گزینه۲` استفاده کنید.
-
-## مجوز
-
-کد مستقل این مخزن با [MIT](LICENSE) منتشر می‌شود. اگر بعداً کد پروژه‌های GPL را ادغام می‌کنید،
-مجوز و تعهدهای همان کد باید رعایت شود؛ صرف لینک‌دادن جای رعایت مجوز را نمی‌گیرد.
+Thanks for building kind, lively communities with us. 🌷

@@ -1,67 +1,98 @@
-# نصب پیشرفتهٔ تاکسی گپ
+# Grow your Tuxigap setup
 
-## پنل وب مالک
+Start small if you like. Each companion is optional, and your normal Telegram panel keeps working without it.
 
-یک کلید مستقل بسازید:
+## Owner dashboard
+
+Set a random `WEB_TOKEN` with at least 32 characters. The setup helper generates one for you, or make your own:
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-مقدار را در `WEB_TOKEN` فایل `.env` بگذارید. این کلید رمز مالک برای همهٔ گروه‌های این نصب است؛ آن را به اعضا ندهید.
-اجرای مستقیم کنار فرایند ربات:
+Run it next to the bot:
 
 ```bash
 python -m tuxigap.dashboard
 ```
 
-یا Docker:
+Or add the dashboard Compose file:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.web.yml up -d --build
 ```
 
-پنل در `http://127.0.0.1:8080` است؛ سرویس اصلی باید دست‌کم یک گروه را ثبت کرده باشد.
-برای سرور دور، از تونل SSH یا reverse proxy با TLS استفاده کنید؛ پورت پیش‌فرض فقط روی loopback منتشر می‌شود.
-کلید در URL، cookie، localStorage یا sessionStorage ذخیره نمی‌شود؛ در حافظهٔ صفحه است و با خروج پاک می‌شود.
-گزینه‌های امنیتی و نمونهٔ آموزشی از وب قابل تغییرند؛ فعال‌سازی فروش و انجام پرداخت/بن از پنل تلگرام می‌ماند.
-پنل وب، کلید سرویس‌های AI و توکن تلگرام را به مرورگر برنمی‌گرداند.
+Visit `http://127.0.0.1:8080`. Use the owner key from your private `.env`. The bot needs to have connected at least one group before it appears here.
 
-## اتصال واقعی tg-spam
+The key grants owner access to all communities in this installation. It isn't a Telegram token. The browser keeps it in page memory—not a URL, cookie, localStorage or sessionStorage. Signing out clears it.
 
-این بخش از Docker image رسمی پروژهٔ MIT استفاده می‌کند؛ کد موتور در مخزن تاکسی گپ کپی نشده است.
-موتور API و پنل خودش را دارد. توکن تلگرام به آن داده نمی‌شود و همهٔ اقدام‌های گروه را تاکسی گپ انجام می‌دهد.
+You can inspect analytics, edit permitted on/off settings, change a group's language and label training examples. Paid-gate activation and member/payment actions remain in Telegram, with live admin checks.
 
-`.env`:
+## Real tg-spam engine
+
+The engine runs from the upstream project's Docker image. It has no Telegram token; Tuxigap sends authenticated checks and keeps ownership of Telegram actions.
 
 ```dotenv
 SPAM_ENGINES={"-1001234567890":"http://spam-engine:8080"}
-SPAM_ENGINE_PASSWORD=REPLACE_WITH_A_LONG_RANDOM_PASSWORD
+SPAM_ENGINE_PASSWORD=YOUR_STRONG_RANDOM_PASSWORD
 CAS_TOKEN=
 ```
 
-شناسه را با گروه واقعی خود جایگزین کنید. رمز قوی بگذارید و، در صورت استفاده، کلید CAS را از Combot بگیرید.
+Then:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.engines.yml up -d --build
 ```
 
-برای اجرای هر دو پنل و موتور:
+- Engine dashboard: `http://127.0.0.1:8081`.
+- Username: `tg-spam`; password: `SPAM_ENGINE_PASSWORD`.
+- Group-specific engine mappings use independent endpoints and volumes. Reusing an endpoint for two groups is rejected.
+- `/check` returns the upstream verdict; feedback waits in `engine_outbox` for `/update/spam` or `/update/ham`.
+- `PARANOID=true` checks each message and disables the upstream engine's own LLM path. Tuxigap's AI is separate.
+- Engine flags start in review mode. Test your language/sample data before turning that review off.
+- Configure CAS, word dictionaries, sample files and Lua in the engine's own supported configuration. A CAS credential is optional; empty means no CAS check.
+- Engine downtime doesn't stop the native flood, word or content rules.
 
-```bash
-docker compose -f docker-compose.yml -f docker-compose.web.yml -f docker-compose.engines.yml up -d --build
+The provided image uses `latest` for discoverability. For production, pin a digest or version you have tested. The engine's own data retention and deletion behavior are independent; local `/forget` doesn't delete provider/companion records automatically.
+
+## Full Telegram Bot Studio companion
+
+This optional service builds **the complete upstream application**, pinned to the commit in `third_party/upstream-lock.json`. It preserves the upstream license and application boundaries.
+
+Set:
+
+```dotenv
+STUDIO_URL=http://localhost:3000
+STUDIO_ADMIN_KEY=A_LONG_RANDOM_ADMIN_KEY
+STUDIO_JWT_SECRET=ANOTHER_LONG_RANDOM_SECRET
 ```
 
-پنل موتور: `http://127.0.0.1:8081`؛ نام کاربری `tg-spam` و رمز همان `SPAM_ENGINE_PASSWORD` است.
-موتور با `PARANOID=true` هر پیام را بررسی می‌کند؛ LLM موتور در این حالت اجرا نمی‌شود و AI خود تاکسی گپ مستقل است.
-نتیجهٔ موتور در شروع فقط برای بازبینی مدیر است. برای اعمال واقعی، هم حالت آزمایشی را خاموش کنید و هم گزینهٔ
-«بازبینی نتیجهٔ موتور» را پس از آزمون داده‌های گروهتان خاموش کنید. پیش‌فرض‌ها و نمونه‌های موتور الزاماً مناسب فارسی نیستند.
+Run:
 
-برای چند گروه، سرویس موتور را با **volume و endpoint جدا** تکثیر کنید و همهٔ نگاشت‌ها را در SPAM_ENGINES بگذارید.
-تاکسی گپ نگاشت دو گروه به یک endpoint یکسان را رد می‌کند تا نمونه‌ها ناخواسته مخلوط نشوند.
-بازخوردها در صف `engine_outbox` می‌مانند تا سرویس دوباره در دسترس باشد؛ قطع موتور قوانین محلی را خاموش نمی‌کند.
+```bash
+docker compose -f docker-compose.yml -f docker-compose.studio.yml up -d --build
+```
 
-این اتصال به قرارداد `POST /check` و `/update/spam|ham` وابسته است. نسخهٔ `latest` تصویر برای شروع استفاده شده؛
-برای تولید، digest یا نسخه‌ای را که خودتان تست کرده‌اید pin کنید. ساخت/اجرای واقعی این سرویس‌ها در این محیط انجام نشده است.
-ویژگی‌های دیگر موتور مثل تنظیم واژه‌ها، نمونه‌ها و پلاگین Lua از خود پنل/تنظیمات موتور مدیریت می‌شوند.
-ذخیره و حذف داده در موتور و ارائه‌دهندهٔ AI سیاست جدا دارد؛ `/forget` پایگاه دادهٔ محلی تاکسی گپ را پوشش می‌دهد.
+Open `http://127.0.0.1:3000` and sign in with the Studio master key. Create a bot using a **different BotFather token**. Don't paste Tuxigap's `BOT_TOKEN` into its bot pool.
+
+Studio supplies its own CRM, support desk, visual flows, broadcasts, knowledge features, Mini App templates, Stars commerce and automation modules. These aren't native Tuxigap commands, and we don't present them as a shared database or unified payment ledger. Its language coverage is upstream's own, not the native 15-language picker.
+
+For a Mini App to work outside your computer, set an appropriate public HTTPS `STUDIO_URL`, configure BotFather as upstream requires, and use a reverse proxy. If both bots are in a group, choose one moderation authority and disable conflicting moderation modules in the other.
+
+## Run everything together
+
+```bash
+python tools/manage.py up --all
+```
+
+The equivalent Compose command is in the main README. Stopping with `down` keeps named volumes. Avoid `down -v` unless you intentionally want to erase persistent databases.
+
+## Reach a remote server safely
+
+The provided dashboard ports are loopback-only. An SSH tunnel is a comfortable option:
+
+```bash
+ssh -L 8080:127.0.0.1:8080 -L 8081:127.0.0.1:8081 -L 3000:127.0.0.1:3000 user@your-server
+```
+
+For a public endpoint, use a TLS reverse proxy and strong independent credentials. Don't expose unauthenticated engine APIs. Keep proxy/CORS settings aligned with the upstream application you actually run.
