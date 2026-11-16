@@ -2,6 +2,9 @@
 
 Release: **0.4.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 
+**Current 0.4 CI: [all four jobs passed](https://github.com/ByeCoder/Tuxigap/actions/runs/43878906180)** for code commit `9c3f7f60ac34b8774ca068a3cf1ed651a4d93738`: 109 tests on Python 3.12 and 3.13, Ruff/translation checks, native Docker build/offline check, and Chromium dashboard checks. The release wheel also built locally with all 15 catalogs.
+
+
 **Prior 0.3 recorded CI: [all four jobs passed](https://github.com/ByeCoder/Tuxigap/actions/runs/43833871701)** for code commit `0c7606c37a0eed4a3f696c07656bef1b24db8962`: Python 3.12, Python 3.13, native Docker, and Chromium browser checks. The browser job captured the [desktop](images/dashboard-en.png) and [mobile](images/dashboard-mobile.png) previews using synthetic data.
 
 | Check | Local result / boundary |
@@ -29,4 +32,4 @@ A browser launch in the authoring workspace was blocked by its operating-system 
 Please complete [LIVE_TEST.md](LIVE_TEST.md), especially membership payments and multi-group federation behavior, before using the toolkit with real communities.
 
 
-For 0.4, 26 additional tests cover safe emoji payloads and fallback, context isolation, staff assignment/scope, delegated moderation, peer protection, promotion subsets, join-policy/payment/federation interactions, retry and stale-button behavior, member-event deduplication, tags, ranks, channel controls, call events, confirmed erasure and persistent group-game rewards. Current 0.4 publication checks are recorded after its workflow finishes. No live Telegram, custom-emoji entitlement, call, channel or Stars test has been performed here.
+For 0.4, 26 additional tests cover safe emoji payloads and fallback, context isolation, staff assignment/scope, delegated moderation, peer protection, promotion subsets, join-policy/payment/federation interactions, retry and stale-button behavior, member-event deduplication, tags, ranks, channel controls, call events, confirmed erasure and persistent group-game rewards. The current 0.4 workflow above passed all jobs. No live Telegram, custom-emoji entitlement, call, channel or Stars test has been performed here.
