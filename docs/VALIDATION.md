@@ -2,6 +2,8 @@
 
 Release: **0.3.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 
+**Recorded CI: [all four jobs passed](https://github.com/ByeCoder/Tuxigap/actions/runs/43833871701)** for code commit `0c7606c37a0eed4a3f696c07656bef1b24db8962`: Python 3.12, Python 3.13, native Docker, and Chromium browser checks. The browser job captured the [desktop](images/dashboard-en.png) and [mobile](images/dashboard-mobile.png) previews using synthetic data.
+
 | Check | Local result / boundary |
 |---|---|
 | Unit and integration tests | 83 independent tests passed before publication; CI runs the current suite |
@@ -15,7 +17,8 @@ Release: **0.3.0**. Local runtime: Python 3.12.14, HTTPX 0.28.1.
 | Database upgrade | Schema 1 → 2 retains existing data in a regression test |
 | Demo | Synthetic data population tested with network-client construction blocked |
 | Real Telegram / Stars / AI provider | Not performed here: no real token, account or provider key supplied |
-| Native Docker and browser | Current workflow builds the image and runs browser checks; see the recorded run below for outcomes |
+| Native Docker | Image build and offline configuration/database check passed in recorded CI |
+| Browser | Chromium sign-in/out, analytics, language/RTL switching and mobile-width checks passed in recorded CI; desktop/mobile screenshots reviewed |
 | Studio companion | Pinned upstream source and Compose configuration reviewed; no live Studio deployment tested here |
 | Independent security audit / load test | Not performed |
 

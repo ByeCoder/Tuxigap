@@ -33,6 +33,15 @@ Open **http://127.0.0.1:8088**, paste the temporary owner key printed in your te
 
 On Windows, activate the environment with `.venv\Scripts\activate`.
 
+<details>
+<summary>Have a peek at the owner dashboard</summary>
+
+![Tuxigap owner dashboard with synthetic community data](docs/images/dashboard-en.png)
+
+You can also open the [mobile preview](docs/images/dashboard-mobile.png). These are real browser captures from our [passing checks](https://github.com/ByeCoder/Tuxigap/actions/runs/43833871701), using demo data only.
+
+</details>
+
 ## Get your bot running
 
 ### A comfortable first setup
@@ -293,7 +302,7 @@ python -m unittest discover -s tests -v
 python tools/check_translations.py
 ```
 
-The tests use fake Telegram/AI responses and local HTTP servers. They do not move real Stars or moderate real communities. CI checks Python 3.12/3.13 and builds the Docker image. [Validation](docs/VALIDATION.md) records what was actually run.
+The 83 tests use fake Telegram/AI responses and local HTTP servers. They do not move real Stars or moderate real communities. CI checks Python 3.12/3.13, builds the Docker image, and exercises the dashboard in Chromium, including language switching and mobile layout. [Validation](docs/VALIDATION.md) records what was actually run.
 
 Please keep `.env`, database files, backups, real user data and payment IDs out of commits. You'll find friendly contribution and security notes in [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
