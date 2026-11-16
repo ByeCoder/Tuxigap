@@ -1,5 +1,7 @@
 # 🚕 تاکسی گپ | Tuxigap
 
+[![checks](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml/badge.svg)](https://github.com/ByeCoder/Tuxigap/actions/workflows/ci.yml)
+
 **توسعه و انتشار: [ByeCoder](https://github.com/ByeCoder) · مخزن: [ByeCoder/Tuxigap](https://github.com/ByeCoder/Tuxigap)**
 
 ربات فارسی مدیریت جامعهٔ تلگرام با پنل دکمه‌ای، ضداسپم، آمار، بازی، هوش مصنوعی و فروش اشتراک.
